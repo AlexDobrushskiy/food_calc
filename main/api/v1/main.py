@@ -24,8 +24,6 @@ class UserViewSet(viewsets.ModelViewSet):
     # authentication_classes = (CsrfExemptSessionAuthentication,)
     # permission_classes = []
 
-    # http_method_names = ['get', 'post', 'head']
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
