@@ -2,12 +2,13 @@ from rest_framework import serializers, viewsets, mixins, status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.fields import CurrentUserDefault, SkipField
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.relations import PKOnlyObject
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER
+from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, CaloriesPerDay
 
 
 class MealUserSerializer(serializers.ModelSerializer):
@@ -81,3 +82,18 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.user.role == USER_ROLE_MANAGER:
             return UserSerializerWithRoleReadOnly
         raise PermissionDenied
+
+
+class CaloriesPerDaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CaloriesPerDay
+        fields = ('value',)
+
+
+class MaxCaloriesSettingView(RetrieveUpdateAPIView):
+    serializer_class = CaloriesPerDaySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        obj, _ = CaloriesPerDay.objects.get_or_create(user=self.request.user)
+        return obj

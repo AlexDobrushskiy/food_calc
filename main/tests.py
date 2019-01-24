@@ -4,7 +4,8 @@ from django.test import TestCase
 from model_mommy import mommy
 from rest_framework.test import APIClient
 
-from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, USER_ROLE_USER
+from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, USER_ROLE_USER, CALORIES_PER_DAY_DEFAULT, \
+    CaloriesPerDay
 
 
 class MealResourceTestCase(TestCase):
@@ -178,3 +179,45 @@ class UserResourceTestCase(TestCase):
         # it returns 200, but silently skips role field
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.get(id=1).role, USER_ROLE_USER)
+
+
+class MaxCaloriesSettingTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='taksa')
+        self.user_client = APIClient()
+        self.user_client.force_authenticate(user=self.user)
+
+        self.admin = User.objects.create(username='admin', role=USER_ROLE_ADMIN)
+        self.admin_client = APIClient()
+        self.admin_client.force_authenticate(user=self.admin)
+
+        self.manager = User.objects.create(username='manager', role=USER_ROLE_MANAGER)
+        self.manager_client = APIClient()
+        self.manager_client.force_authenticate(user=self.manager)
+
+    def test_user_can_fetch(self):
+        response = self.user_client.get('/api/v1/max_calories/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['value'], CALORIES_PER_DAY_DEFAULT)
+
+    def test_user_can_update(self):
+        response = self.user_client.patch('/api/v1/max_calories/',
+                                          {
+                                              'value': 999
+                                          })
+        self.assertEqual(CaloriesPerDay.objects.get(user=self.user).value, 999)
+
+    def test_admin_cant_update_users_one(self):
+        response = self.user_client.get('/api/v1/max_calories/')
+        response = self.admin_client.patch('/api/v1/max_calories/',
+                                           {
+                                               'value': 999
+                                           })
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(CaloriesPerDay.objects.get(user=self.user).value, 999)
+        response = self.admin_client.patch(
+            '/api/v1/max_calories/{}/'.format(CaloriesPerDay.objects.get(user=self.user).id),
+            {
+                'value': 999
+            })
+        self.assertEqual(response.status_code, 404)
