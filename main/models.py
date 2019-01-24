@@ -7,9 +7,9 @@ USER_ROLE_MANAGER = 1
 USER_ROLE_ADMIN = 2
 
 USER_ROLE_CHOICES = (
-    ('User', USER_ROLE_USER),
-    ('Manager', USER_ROLE_MANAGER),
-    ('Admin', USER_ROLE_ADMIN),
+    (USER_ROLE_USER, 'User'),
+    (USER_ROLE_MANAGER, 'Manager'),
+    (USER_ROLE_ADMIN, 'Admin'),
 )
 
 

@@ -1,14 +1,13 @@
 from rest_framework import serializers, viewsets, mixins, status, permissions
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.fields import CurrentUserDefault, SkipField
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.relations import PKOnlyObject
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from main.models import User, Meal, USER_ROLE_ADMIN
-
+from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER
 
 
 class MealUserSerializer(serializers.ModelSerializer):
@@ -41,7 +40,7 @@ class MealViewSet(viewsets.ModelViewSet):
             return self.get_queryset_for_user()
 
     def get_serializer_class(self):
-        if self.request.user.is_staff:
+        if self.request.user.role == USER_ROLE_ADMIN:
             return MealAdminSerializer
         return MealUserSerializer
 
@@ -49,21 +48,36 @@ class MealViewSet(viewsets.ModelViewSet):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'password', 'daily_calories')
+        fields = ('id', 'username', 'password', 'role',)
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+
+class UserSerializerWithRoleReadOnly(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'role',)
         extra_kwargs = {
             'password': {'write_only': True},
+            'role': {'read_only': True}
         }
+
+
+class IsAdminOrManager(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.role in (USER_ROLE_ADMIN, USER_ROLE_MANAGER):
+            return True
+        return False
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated, IsAdminOrManager)
 
-    # authentication_classes = (CsrfExemptSessionAuthentication,)
-    # permission_classes = []
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response('Created', status=status.HTTP_201_CREATED)
+    def get_serializer_class(self):
+        if self.request.user.role == USER_ROLE_ADMIN:
+            return UserSerializer
+        if self.request.user.role == USER_ROLE_MANAGER:
+            return UserSerializerWithRoleReadOnly
+        raise PermissionDenied
