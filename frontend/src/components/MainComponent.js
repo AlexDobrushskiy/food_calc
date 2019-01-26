@@ -1,27 +1,32 @@
 import React, {Component} from 'react';
-import Login from "./LoginComponent";
+import {LoginPage} from "../components/LoginPageComponent";
 import MealList from "./MealListComponent";
 import UserList from "./UserListComponent";
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom'
+import {Container, Row} from 'reactstrap';
 
 class Main extends Component {
     render() {
         return (
             <div>
-                <li>
-                    <ul>
-                        <a href="/login">Login</a>
-                    </ul>
-                    <ul>
-                        <a href="/meals">MealList</a>
-                    </ul>
-                    <ul>
-                        <a href="/users">UserList</a>
-                    </ul>
-                </li>
+                <Container>
+                    <Row className="justify-content-center">
+                        <ul className="list-inline">
+                            <li className="list-inline-item">
+                                <a href="/login">Login</a>
+                            </li>
+                            <li className="list-inline-item">
+                                <a href="/meals">MealList</a>
+                            </li>
+                            <li className="list-inline-item">
+                                <a href="/users">UserList</a>
+                            </li>
+                        </ul>
+                    </Row>
+                </Container>
                 <div>
                     <Switch>
-                        <Route exact path='/login' component={Login}/>
+                        <Route exact path='/login' component={LoginPage}/>
                         <Route exact path='/meals' component={MealList}/>
                         <Route exact path='/users' component={UserList}/>
                         <Redirect to="/meals"/>
