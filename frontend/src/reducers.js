@@ -6,6 +6,8 @@ const reducer = (state = {}, action) => {
             return { ...state, isOpen: true };
         case actionTypes.CLOSE_REGISTER_FORM:
             return { ...state, isOpen: false };
+        case actionTypes.SAVE_API_TOKEN:
+            return { ...state, token: action.token};
         default:
             return state;
     }

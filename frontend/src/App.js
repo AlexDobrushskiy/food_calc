@@ -2,24 +2,30 @@ import React, {Component} from 'react';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 
-import {BrowserRouter} from 'react-router-dom';
+import {Router} from 'react-router-dom';
 import reducer from './reducers';
 import Main from './components/MainComponent';
+import history from './history';
 import './App.css';
 
-
-const store = createStore(reducer,
+const token = localStorage.getItem('token');
+const initState = {token};
+const store = createStore(reducer, initState,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+store.subscribe(() => {
+    localStorage.setItem('token', store.getState().token);
+});
 
 class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <BrowserRouter>
+                <Router history={history}>
                     <div className="App">
                         <Main/>
                     </div>
-                </BrowserRouter>
+                </Router>
             </Provider>
         );
     }

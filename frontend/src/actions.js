@@ -7,3 +7,8 @@ export const openRegisterForm = () => ({
 export const closeRegisterForm = () => ({
     type: actionTypes.CLOSE_REGISTER_FORM
 });
+
+export const saveAPIToken = (token) => ({
+    type: actionTypes.SAVE_API_TOKEN,
+    token
+});

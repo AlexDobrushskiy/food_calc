@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {LoginPage} from "../components/LoginPageComponent";
+import {LoginPageContainer} from "../containers/LoginPageContainer";
 import MealList from "./MealListComponent";
 import UserList from "./UserListComponent";
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom'
@@ -26,7 +26,7 @@ class Main extends Component {
                 </Container>
                 <div>
                     <Switch>
-                        <Route exact path='/login' component={LoginPage}/>
+                        <Route exact path='/login' component={LoginPageContainer}/>
                         <Route exact path='/meals' component={MealList}/>
                         <Route exact path='/users' component={UserList}/>
                         <Redirect to="/meals"/>

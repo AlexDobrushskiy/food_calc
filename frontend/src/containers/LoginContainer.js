@@ -1,16 +1,19 @@
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { Login } from '../components/LoginComponent';
-import { openRegisterForm } from '../actions';
+import {Login} from '../components/LoginComponent';
+import {openRegisterForm, saveAPIToken} from '../actions';
 
 const mapStateToProps = state => ({
-  modalOpen: state.isOpen
+    token: state.token
 });
 
 const mapDispatchToProps = dispatch => ({
-  openRegisterForm: () => {
-    dispatch(openRegisterForm());
-  }
+    openRegisterForm: () => {
+        dispatch(openRegisterForm());
+    },
+    saveAPIToken: (token) => {
+        dispatch(saveAPIToken(token));
+    }
 });
 
-export const LoginContainer = connect(null, mapDispatchToProps)(Login);
+export const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Login);
