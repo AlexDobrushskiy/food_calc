@@ -141,7 +141,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-
+    # 'DEFAULT_FILTER_BACKENDS': (
+    #     'django_filters.rest_framework.DjangoFilterBackend',
+    # ),
+    'DEFAULT_PAGINATION_CLASS': 'main.paginators.PageNumberPaginationWithCurrentPageNumber',
+    'PAGE_SIZE': 10,
+    'TIME_FORMAT': '%H:%M:%S',
+    'TIME_INPUT_FORMATS': ['%H:%M:%S']
 }
 
 SITE_ID = 1

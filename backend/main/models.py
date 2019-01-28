@@ -23,7 +23,7 @@ class Meal(models.Model):
     # Each entry has a date, time, text, and num of calories.
     date = models.DateField()
     time = models.TimeField()
-    text = models.TextField()
+    text = models.CharField(max_length=100)
     calories = models.IntegerField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)

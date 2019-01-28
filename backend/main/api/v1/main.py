@@ -1,12 +1,8 @@
-from rest_framework import serializers, viewsets, mixins, status, permissions
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework.fields import CurrentUserDefault, SkipField
+from rest_framework import serializers, viewsets
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import CurrentUserDefault
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import BasePermission, IsAuthenticated
-from rest_framework.relations import PKOnlyObject
-from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
 from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, CaloriesPerDay
 

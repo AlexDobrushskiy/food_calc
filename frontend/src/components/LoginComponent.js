@@ -15,7 +15,6 @@ import {
     Label
 } from 'reactstrap';
 import history from '../history';
-
 import axios from 'axios';
 import * as settings from '../settings';
 
@@ -53,7 +52,9 @@ export class Login extends Component {
     constructor(props) {
         super(props);
         this.emptyErrors = {
-            non_field_errors: []
+            non_field_errors: [],
+            username: [],
+            password: []
         };
         this.state = {
             username: '',
@@ -101,6 +102,26 @@ export class Login extends Component {
                 );
             });
         }
+        let usernameErrors = [];
+        if (this.state.errors.username) {
+            this.state.errors.username.forEach((errorText, index) => {
+                usernameErrors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }
+        let passwordErrors = [];
+        if (this.state.errors.password) {
+            this.state.errors.password.forEach((errorText, index) => {
+                passwordErrors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }
 
         return (
             <Container className="text-center">
@@ -117,6 +138,7 @@ export class Login extends Component {
                                    required="" autoFocus="" value={this.state.username} onChange={this.onLoginChange}/>
                         </div>
                     </Row>
+                    {usernameErrors}
                     <Row className="justify-content-center">
                         <div className="col-4">
                             <Label for="inputPassword" className="sr-only">Password</Label>
@@ -124,11 +146,12 @@ export class Login extends Component {
                                    required="" value={this.state.password} onChange={this.onPasswordChange}/>
                         </div>
                     </Row>
+                    {passwordErrors}
                     {nonFieldErrors}
                     <Row className="justify-content-center">
-                        <div className="col-4">
-                            <a href="#" role="button" onClick={this.props.openRegisterForm}>Do not have account yet?
-                                Sign Up</a>
+                        <div className="col-5">
+                            <span className="btn btn-link" onClick={this.props.openRegisterForm}>Do not have account yet?
+                                Sign Up</span>
                         </div>
                     </Row>
                     <Row className="justify-content-center mt-4">
