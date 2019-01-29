@@ -77,6 +77,7 @@ class MealList extends Component {
                 nextLinkClassName={'page-link'}
                 breakClassName={'page-item'}
                 breakLinkClassName={'page-link'}
+                forcePage={this.props.currentPage-1}
             />
         </Row>;
 

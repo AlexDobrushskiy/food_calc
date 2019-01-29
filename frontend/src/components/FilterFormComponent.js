@@ -2,21 +2,39 @@ import React, {Component} from 'react';
 import {Input} from 'reactstrap';
 import axios from 'axios';
 import * as settings from '../settings';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import strftime from 'strftime';
 
 export class FilterForm extends Component {
-    onChangeDateFrom = (e) => {
-        this.props.setFilterField('filterDateFrom', e.target.value);
+    constructor(props) {
+        super(props);
+        this.state = {
+            startDate: null,
+            loadInProgress: false
+        };
+    }
+
+    handleChange = (date) => {
+        this.setState({
+            startDate: date
+        });
     };
-    onChangeDateTo = (e) => {
-        this.props.setFilterField('filterDateTo', e.target.value);
+
+    onChangeDateFrom = (date) => {
+        this.props.setFilterField('filterDateFrom', date);
     };
-    onChangeTimeFrom = (e) => {
-        this.props.setFilterField('filterTimeFrom', e.target.value);
+    onChangeDateTo = (date) => {
+        this.props.setFilterField('filterDateTo', date);
     };
-    onChangeTimeTo = (e) => {
-        this.props.setFilterField('filterTimeTo', e.target.value);
+    onChangeTimeFrom = (date) => {
+        this.props.setFilterField('filterTimeFrom', date);
+    };
+    onChangeTimeTo = (date) => {
+        this.props.setFilterField('filterTimeTo', date);
     };
     onFilterClick = (e) => {
+        this.setState({loadInProgress: true});
         // TODO: validate if some field are not filled
         this.fetchMeals();
     };
@@ -28,16 +46,16 @@ export class FilterForm extends Component {
 
         let mealRequestUrl = `${settings.MEAL_URL}?`;
         if (df) {
-            mealRequestUrl = `${mealRequestUrl}date__gte=${df}&`
+            mealRequestUrl = `${mealRequestUrl}date__gte=${strftime('%Y-%m-%d', df)}&`
         }
         if (dt) {
-            mealRequestUrl = `${mealRequestUrl}date__lte=${dt}&`
+            mealRequestUrl = `${mealRequestUrl}date__lte=${strftime('%Y-%m-%d', dt)}&`
         }
         if (tf) {
-            mealRequestUrl = `${mealRequestUrl}time__gte=${tf}&`
+            mealRequestUrl = `${mealRequestUrl}time__gte=${strftime('%H:%M:%S', tf)}&`
         }
         if (tt) {
-            mealRequestUrl = `${mealRequestUrl}time__lte=${tt}&`
+            mealRequestUrl = `${mealRequestUrl}time__lte=${strftime('%H:%M:%S', tt)}&`
         }
 
         // TODO: show spinner
@@ -45,34 +63,72 @@ export class FilterForm extends Component {
             this.props.saveMealList(r.data.results);
             this.props.setCurrentPage(r.data.current_page);
             this.props.setMaxPage(r.data.max_page);
+            this.setState({loadInProgress: false});
         }).catch((err) => {
             alert('Error fetching meals');
+            this.setState({loadInProgress: false});
         });
     };
 
     render() {
-        return <form className="form-inline">
+        let minTime = new Date();
+        minTime.setHours(0);
+        minTime.setMinutes(0);
+        let maxTime = new Date();
+        maxTime.setHours(23);
+        maxTime.setMinutes(59);
+        const spinner = this.state.loadInProgress ?
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/> : null;
+        return <form className="form-inline mb-4">
             <div className="form-group">
                 <div className="input-group">
-                    <Input type="date" className="form-control mb-2 border-right-0" id="idDateFrom"
-                           value={this.props.filterDateFrom} onChange={this.onChangeDateFrom}/>
-                    <div className="input-group-prepend">
-                        <div className="input-group-text">to</div>
-                    </div>
-                    <Input type="date" className="form-control mb-2 mr-sm-2" id="idDateTo"
-                           value={this.props.filterDateTo} onChange={this.onChangeDateTo}/>
+                    <DatePicker
+                        selected={this.props.filterDateFrom}
+                        onChange={this.onChangeDateFrom}
+                        placeholderText="From date"
+                        maxDate={this.props.filterDateTo}
+                    />
+                    <DatePicker
+                        selected={this.props.filterDateTo}
+                        onChange={this.onChangeDateTo}
+                        placeholderText="To date"
+                        minDate={this.props.filterDateFrom}
+                    />
                 </div>
                 <div className="input-group">
-                    <Input type="time" className="form-control mb-2 border-right-0" id="idTimeFrom"
-                           value={this.props.filterTimeFrom} onChange={this.onChangeTimeFrom}/>
-                    <div className="input-group-prepend">
-                        <div className="input-group-text">to</div>
-                    </div>
-                    <Input type="time" className="form-control mb-2 mr-sm-2" id="idTimeTo"
-                           value={this.props.filterTimeTo} onChange={this.onChangeTimeTo}/>
+                    <DatePicker
+                        selected={this.props.filterTimeFrom}
+                        onChange={this.onChangeTimeFrom}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        dateFormat="hh:mm a"
+                        timeCaption="Time"
+                        placeholderText="From time"
+                        minTime={minTime}
+                        maxTime={this.props.filterTimeTo ? this.props.filterTimeTo : maxTime}
+                    />
+                    <DatePicker
+                        selected={this.props.filterTimeTo}
+                        onChange={this.onChangeTimeTo}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        dateFormat="hh:mm a"
+                        timeCaption="Time"
+                        placeholderText="To time"
+                        minTime={this.props.filterTimeFrom ? this.props.filterTimeFrom : minTime}
+                        maxTime={maxTime}
+                    />
                 </div>
+                <button type="button" className="btn btn-outline-secondary ml-3" onClick={this.onFilterClick}
+                        disabled={this.state.loadInProgress}>
+                    {spinner}
+                    Filter
+                </button>
             </div>
-            <button type="button" className="btn btn-primary mb-2" onClick={this.onFilterClick}>Filter</button>
+
         </form>;
     }
+
 }
