@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'corsheaders',
     'main',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

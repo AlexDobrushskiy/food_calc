@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CurrentUserDefault
@@ -21,8 +23,19 @@ class MealAdminSerializer(serializers.ModelSerializer):
         fields = ('date', 'time', 'text', 'calories', 'user', 'id')
 
 
+class MealFilter(filters.FilterSet):
+    class Meta:
+        model = Meal
+        fields = {
+            'date': ['lte', 'gte'],
+            'time': ['lte', 'gte'],
+        }
+
+
 class MealViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = MealFilter
 
     def get_queryset_for_admin(self):
         return self.queryset

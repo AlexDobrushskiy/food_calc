@@ -5,6 +5,7 @@ import {
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import * as settings from '../settings';
+import history from '../history';
 
 class MealList extends Component {
 
@@ -13,20 +14,26 @@ class MealList extends Component {
     };
 
     fetchMeals = (pageNumber = 1) => {
-        console.log(pageNumber);
         const mealRequestUrl = `${settings.MEAL_URL}?page=${pageNumber}`;
         axios.get(mealRequestUrl, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
             this.props.saveMealList(r.data.results);
             this.props.setCurrentPage(r.data.current_page);
             this.props.setMaxPage(r.data.max_page);
         }).catch((err) => {
-            alert('Error fetching meals');
-            // TODO: probably token has expired. Forget token and redirect to login page
-            console.log('Error fetching meals!');
+            console.log('Error fetching meals');
+            history.push('/login/');
         });
     };
 
+    componentDidMount() {
+        if (!this.props.token) {
+            history.push('/login/');
+        }
+    }
     render() {
+        if (!this.props.token) {
+            return null;
+        }
         if (this.props.meals === null) {
             this.fetchMeals();
         }

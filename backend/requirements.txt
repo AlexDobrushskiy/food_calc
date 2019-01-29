@@ -3,3 +3,4 @@ djangorestframework==3.9.1
 django-rest-auth[with_social]==0.9.3
 model-mommy==1.6.0
 django-cors-headers==2.4.0
+django-filter==2.1.0
