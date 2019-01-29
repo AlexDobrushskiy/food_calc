@@ -1,14 +1,16 @@
 import {connect} from 'react-redux';
 
 import {FilterForm} from '../components/FilterFormComponent';
-import {saveMealList, setCurrentPage, setFilterField, setMaxPage} from '../actions';
+import {openAddMealModal, saveMealList, setCurrentPage, setFilterField, setMaxPage} from '../actions';
 
 const mapStateToProps = state => ({
     filterDateFrom: state.filterDateFrom,
     filterDateTo: state.filterDateTo,
     filterTimeFrom: state.filterTimeFrom,
     filterTimeTo: state.filterTimeTo,
-    token: state.token
+    currentPage: state.currentPage,
+    token: state.token,
+    mealFetchingInProgress: state.mealFetchingInProgress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -23,7 +25,11 @@ const mapDispatchToProps = dispatch => ({
     },
     setMaxPage: (number) => {
         dispatch(setMaxPage(number));
-    }
+    },
+    openAddMealModal: () => {
+        dispatch(openAddMealModal());
+    },
+    dispatch
 });
 
 export const FilterFormContainer = connect(mapStateToProps, mapDispatchToProps)(FilterForm);

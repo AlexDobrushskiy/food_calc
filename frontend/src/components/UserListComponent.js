@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Card, CardHeader, DropdownItem, DropdownMenu, DropdownToggle, CardBody, Navbar} from 'reactstrap';
-import {Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input, Table, ModalFooter, Dropdown, Container} from 'reactstrap';
+import {Card, CardHeader, CardBody, Navbar} from 'reactstrap';
+import {Container} from 'reactstrap';
 
 class UserList extends Component {
     render() {

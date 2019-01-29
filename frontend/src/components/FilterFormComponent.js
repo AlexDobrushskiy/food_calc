@@ -1,26 +1,12 @@
 import React, {Component} from 'react';
-import {Input} from 'reactstrap';
 import axios from 'axios';
 import * as settings from '../settings';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import strftime from 'strftime';
+import {fetchMeals} from "../actions";
 
 export class FilterForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            startDate: null,
-            loadInProgress: false
-        };
-    }
-
-    handleChange = (date) => {
-        this.setState({
-            startDate: date
-        });
-    };
-
     onChangeDateFrom = (date) => {
         this.props.setFilterField('filterDateFrom', date);
     };
@@ -34,42 +20,13 @@ export class FilterForm extends Component {
         this.props.setFilterField('filterTimeTo', date);
     };
     onFilterClick = (e) => {
-        this.setState({loadInProgress: true});
-        // TODO: validate if some field are not filled
-        this.fetchMeals();
+        this.props.dispatch(fetchMeals(this.props.token,
+                this.props.filterDateFrom,
+                this.props.filterDateTo,
+                this.props.filterTimeFrom,
+                this.props.filterTimeTo,
+                this.props.currentPage));
     };
-    fetchMeals = () => {
-        const df = this.props.filterDateFrom;
-        const dt = this.props.filterDateTo;
-        const tf = this.props.filterTimeFrom;
-        const tt = this.props.filterTimeTo;
-
-        let mealRequestUrl = `${settings.MEAL_URL}?`;
-        if (df) {
-            mealRequestUrl = `${mealRequestUrl}date__gte=${strftime('%Y-%m-%d', df)}&`
-        }
-        if (dt) {
-            mealRequestUrl = `${mealRequestUrl}date__lte=${strftime('%Y-%m-%d', dt)}&`
-        }
-        if (tf) {
-            mealRequestUrl = `${mealRequestUrl}time__gte=${strftime('%H:%M:%S', tf)}&`
-        }
-        if (tt) {
-            mealRequestUrl = `${mealRequestUrl}time__lte=${strftime('%H:%M:%S', tt)}&`
-        }
-
-        // TODO: show spinner
-        axios.get(mealRequestUrl, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
-            this.props.saveMealList(r.data.results);
-            this.props.setCurrentPage(r.data.current_page);
-            this.props.setMaxPage(r.data.max_page);
-            this.setState({loadInProgress: false});
-        }).catch((err) => {
-            alert('Error fetching meals');
-            this.setState({loadInProgress: false});
-        });
-    };
-
     render() {
         let minTime = new Date();
         minTime.setHours(0);
@@ -77,9 +34,12 @@ export class FilterForm extends Component {
         let maxTime = new Date();
         maxTime.setHours(23);
         maxTime.setMinutes(59);
-        const spinner = this.state.loadInProgress ?
+        const spinner = this.props.mealFetchingInProgress ?
             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/> : null;
         return <form className="form-inline mb-4">
+            <button className="btn btn-secondary mr-4 btn-success" type="button" onClick={this.props.openAddMealModal}>
+                Add meal
+            </button>
             <div className="form-group">
                 <div className="input-group">
                     <DatePicker
@@ -122,7 +82,7 @@ export class FilterForm extends Component {
                     />
                 </div>
                 <button type="button" className="btn btn-outline-secondary ml-3" onClick={this.onFilterClick}
-                        disabled={this.state.loadInProgress}>
+                        disabled={this.props.mealFetchingInProgress}>
                     {spinner}
                     Filter
                 </button>

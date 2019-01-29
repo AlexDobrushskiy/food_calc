@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, CardHeader, DropdownItem, DropdownMenu, DropdownToggle, CardBody, Navbar, Row, Col} from 'reactstrap';
+import {Row} from 'reactstrap';
 import {
     Button,
     Modal,
@@ -8,9 +8,6 @@ import {
     Form,
     FormGroup,
     Input,
-    Table,
-    ModalFooter,
-    Dropdown,
     Container,
     Label
 } from 'reactstrap';

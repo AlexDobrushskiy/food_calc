@@ -33,7 +33,7 @@ class MealFilter(filters.FilterSet):
 
 
 class MealViewSet(viewsets.ModelViewSet):
-    queryset = Meal.objects.all()
+    queryset = Meal.objects.all().order_by('-date', '-time', '-id')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MealFilter
 
