@@ -3,7 +3,6 @@ import axios from 'axios';
 import * as settings from '../settings';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import strftime from 'strftime';
 import {fetchMeals} from "../actions";
 
 export class FilterForm extends Component {
@@ -20,12 +19,7 @@ export class FilterForm extends Component {
         this.props.setFilterField('filterTimeTo', date);
     };
     onFilterClick = (e) => {
-        this.props.dispatch(fetchMeals(this.props.token,
-                this.props.filterDateFrom,
-                this.props.filterDateTo,
-                this.props.filterTimeFrom,
-                this.props.filterTimeTo,
-                this.props.currentPage));
+        this.props.dispatch(fetchMeals());
     };
     render() {
         let minTime = new Date();

@@ -43,12 +43,13 @@ export class AddMeal extends Component {
         };
         // show  spinner
         axios.post(settings.MEAL_URL, data, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
-            return this.props.fetchMeals(this.props.token,
-                this.props.filterDateFrom,
-                this.props.filterDateTo,
-                this.props.filterTimeFrom,
-                this.props.filterTimeTo,
-                this.props.currentPage);
+            // return this.props.fetchMeals(this.props.token,
+            //     this.props.filterDateFrom,
+            //     this.props.filterDateTo,
+            //     this.props.filterTimeFrom,
+            //     this.props.filterTimeTo,
+            //     this.props.currentPage);
+            return this.props.dispatch(fetchMeals());
         }).then(() => {
             this.props.closeAddMealModal();
         })

@@ -13,7 +13,8 @@ const token = localStorage.getItem('token');
 const initState = {
     token,
     meals: null,
-    isOpen: false
+    isOpen: false,
+    currentPage: 1
 };
 
 const store = createStore(reducer,

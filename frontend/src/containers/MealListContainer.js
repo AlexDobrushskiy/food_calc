@@ -20,7 +20,8 @@ const mapDispatchToProps = dispatch => ({
     },
     setMaxPage: (number) => {
         dispatch(setMaxPage(number));
-    }
+    },
+    dispatch
 });
 
 export const MealListContainer = connect(mapStateToProps, mapDispatchToProps)(MealList);

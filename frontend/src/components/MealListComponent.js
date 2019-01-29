@@ -8,25 +8,15 @@ import * as settings from '../settings';
 import history from '../history';
 import {FilterFormContainer} from "../containers/FilterFormContainer";
 import {AddMealContainer} from "../containers/AddMealContainer";
+import {fetchMeals} from "../actions";
 
 class MealList extends Component {
 
     handlePageClick = (e) => {
-        this.fetchMeals(e.selected + 1);
+        this.props.setCurrentPage(e.selected + 1);
+        this.props.dispatch(fetchMeals());
     };
 
-    fetchMeals = (pageNumber = 1) => {
-        const mealRequestUrl = `${settings.MEAL_URL}?page=${pageNumber}`;
-        // TODO: show spinner
-        axios.get(mealRequestUrl, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
-            this.props.saveMealList(r.data.results);
-            this.props.setCurrentPage(r.data.current_page);
-            this.props.setMaxPage(r.data.max_page);
-        }).catch((err) => {
-            console.log('Error fetching meals');
-            history.push('/login/');
-        });
-    };
 
     componentDidMount() {
         if (!this.props.token) {
@@ -39,7 +29,7 @@ class MealList extends Component {
             return null;
         }
         if (this.props.meals === null) {
-            this.fetchMeals();
+            this.props.dispatch(fetchMeals());
         }
         let meals = [];
         if (this.props.meals !== null) {

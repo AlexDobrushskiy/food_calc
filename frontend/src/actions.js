@@ -53,22 +53,23 @@ export const mealsAreFetched = () => ({
     type: actionTypes.MEALS_ARE_FETCHED
 });
 
-export const fetchMeals = (token, dateFrom, dateTo, timeFrom, timeTo, pageNumber) => {
-    return dispatch => {
+export const fetchMeals = () => {
+    return (dispatch, getState) => {
+        const {currentPage, token, filterDateFrom, filterDateTo, filterTimeFrom, filterTimeTo} = getState();
         dispatch(startFetchingMeals);
-        let mealRequestUrl = `${settings.MEAL_URL}?page=${pageNumber}&`;
+        let mealRequestUrl = `${settings.MEAL_URL}?page=${currentPage}&`;
 
-        if (dateFrom) {
-            mealRequestUrl = `${mealRequestUrl}date__gte=${strftime('%Y-%m-%d', dateFrom)}&`
+        if (filterDateFrom) {
+            mealRequestUrl = `${mealRequestUrl}date__gte=${strftime('%Y-%m-%d', filterDateFrom)}&`
         }
-        if (dateTo) {
-            mealRequestUrl = `${mealRequestUrl}date__lte=${strftime('%Y-%m-%d', dateTo)}&`
+        if (filterDateTo) {
+            mealRequestUrl = `${mealRequestUrl}date__lte=${strftime('%Y-%m-%d', filterDateTo)}&`
         }
-        if (timeFrom) {
-            mealRequestUrl = `${mealRequestUrl}time__gte=${strftime('%H:%M:%S', timeFrom)}&`
+        if (filterTimeFrom) {
+            mealRequestUrl = `${mealRequestUrl}time__gte=${strftime('%H:%M:%S', filterTimeFrom)}&`
         }
-        if (timeTo) {
-            mealRequestUrl = `${mealRequestUrl}time__lte=${strftime('%H:%M:%S', timeTo)}&`
+        if (filterTimeTo) {
+            mealRequestUrl = `${mealRequestUrl}time__lte=${strftime('%H:%M:%S', filterTimeTo)}&`
         }
 
         return axios.get(mealRequestUrl, {headers: {Authorization: 'Token ' + token}}).then((r) => {

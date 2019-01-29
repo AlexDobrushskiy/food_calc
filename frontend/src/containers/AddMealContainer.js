@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 
 import {AddMeal} from '../components/AddMealComponent';
-import {closeAddMealModal, fetchMeals} from '../actions';
+import {closeAddMealModal} from '../actions';
 
 const mapStateToProps = state => ({
     isOpen: state.addMealModalOpened,
@@ -17,9 +17,7 @@ const mapDispatchToProps = dispatch => ({
     closeAddMealModal: () => {
         dispatch(closeAddMealModal());
     },
-    fetchMeals: (token, dateFrom, dateTo, timeFrom, timeTo, pageNumber) => {
-        dispatch(fetchMeals(token, dateFrom, dateTo, timeFrom, timeTo, pageNumber))
-    }
+    dispatch
 });
 
 export const AddMealContainer = connect(mapStateToProps, mapDispatchToProps)(AddMeal);
