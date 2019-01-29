@@ -16,6 +16,8 @@ const reducer = (state = {}, action) => {
             return {...state, currentPage: action.number};
         case actionTypes.SET_MAX_PAGE:
             return {...state, maxPage: action.number};
+        case actionTypes.SET_FILTER_FIELD:
+            return {...state, [action.fieldName]: action.value};
         default:
             return state;
     }

@@ -29,3 +29,8 @@ export const setMaxPage  = (number) => ({
     type: actionTypes.SET_MAX_PAGE,
     number
 });
+export const setFilterField = (fieldName, value) => ({
+    type: actionTypes.SET_FILTER_FIELD,
+    fieldName,
+    value
+});

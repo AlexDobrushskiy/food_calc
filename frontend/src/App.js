@@ -9,7 +9,11 @@ import history from './history';
 import './App.css';
 
 const token = localStorage.getItem('token');
-const initState = {token, meals: null, isOpen: false};
+const initState = {
+    token,
+    meals: null,
+    isOpen: false
+};
 
 const store = createStore(reducer, initState,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

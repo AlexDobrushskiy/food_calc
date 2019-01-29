@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import * as settings from '../settings';
 import history from '../history';
+import {FilterFormContainer} from "../containers/FilterFormContainer";
 
 class MealList extends Component {
 
@@ -15,6 +16,7 @@ class MealList extends Component {
 
     fetchMeals = (pageNumber = 1) => {
         const mealRequestUrl = `${settings.MEAL_URL}?page=${pageNumber}`;
+        // TODO: show spinner
         axios.get(mealRequestUrl, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
             this.props.saveMealList(r.data.results);
             this.props.setCurrentPage(r.data.current_page);
@@ -30,6 +32,7 @@ class MealList extends Component {
             history.push('/login/');
         }
     }
+
     render() {
         if (!this.props.token) {
             return null;
@@ -55,29 +58,33 @@ class MealList extends Component {
                 </tr>
             });
         }
+        const paginationRow = <Row className="justify-content-center">
+            <ReactPaginate
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                breakLabel={'...'}
+                pageCount={this.props.maxPage}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={this.handlePageClick}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                previousClassName={'page-item'}
+                previousLinkClassName={'page-link'}
+                nextClassName={'page-item'}
+                nextLinkClassName={'page-link'}
+                breakClassName={'page-item'}
+                breakLinkClassName={'page-link'}
+            />
+        </Row>;
+
         return <Container>
             <Row className="justify-content-center">
-                <form className="form-inline">
-                    <div className="form-group">
-                        <div className="input-group">
-                            <Input type="date" className="form-control mb-2 border-right-0" id="idDateFrom"/>
-                            <div className="input-group-prepend">
-                                <div className="input-group-text">to</div>
-                            </div>
-                            <Input type="date" className="form-control mb-2 mr-sm-2" id="idDateTo"/>
-                        </div>
-                        <div className="input-group">
-                            <Input type="time" className="form-control mb-2 border-right-0" id="idTimeFrom"/>
-                            <div className="input-group-prepend">
-                                <div className="input-group-text">to</div>
-                            </div>
-                            <Input type="time" className="form-control mb-2 mr-sm-2" id="idTimeTo"/>
-
-                        </div>
-                    </div>
-                    <button type="button" className="btn btn-primary mb-2">Filter</button>
-                </form>
+                <FilterFormContainer/>
             </Row>
+            {paginationRow}
             <table className="table" style={{tableLayout: 'fixed'}}>
                 <thead>
                 <tr>
@@ -92,27 +99,7 @@ class MealList extends Component {
                 {meals}
                 </tbody>
             </table>
-            <Row className="justify-content-center">
-                <ReactPaginate
-                    previousLabel={'previous'}
-                    nextLabel={'next'}
-                    breakLabel={'...'}
-                    pageCount={this.props.maxPage}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={this.handlePageClick}
-                    containerClassName={'pagination'}
-                    activeClassName={'active'}
-                    pageClassName={'page-item'}
-                    pageLinkClassName={'page-link'}
-                    previousClassName={'page-item'}
-                    previousLinkClassName={'page-link'}
-                    nextClassName={'page-item'}
-                    nextLinkClassName={'page-link'}
-                    breakClassName={'page-item'}
-                    breakLinkClassName={'page-link'}
-                />
-            </Row>
+            {paginationRow}
         </Container>
     }
 }
