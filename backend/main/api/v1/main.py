@@ -1,3 +1,4 @@
+from django.db.models.expressions import RawSQL
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
 from rest_framework import serializers, viewsets
@@ -11,10 +12,11 @@ from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, Calories
 
 class MealUserSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=CurrentUserDefault())
+    exceeded_calories_per_day = serializers.ReadOnlyField()
 
     class Meta:
         model = Meal
-        fields = ('date', 'time', 'text', 'calories', 'user', 'id')
+        fields = ('date', 'time', 'text', 'calories', 'user', 'id', 'exceeded_calories_per_day',)
 
 
 class MealAdminSerializer(serializers.ModelSerializer):
