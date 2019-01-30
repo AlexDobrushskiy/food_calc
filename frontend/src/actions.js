@@ -83,3 +83,27 @@ export const fetchMeals = () => {
         });
     }
 };
+
+const deleteMealStart = () => ({
+    type: actionTypes.DELETE_MEAL_START
+});
+
+const deleteMealDone = () => ({
+    type: actionTypes.DELETE_MEAL_DONE
+});
+
+export const deleteMeal = (id) => {
+    return (dispatch, getState) => {
+        const {token} = getState();
+        const mealDeleteUrl = `${settings.MEAL_URL}${id}/`;
+        dispatch(deleteMealStart());
+        return axios.delete(mealDeleteUrl, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+                dispatch(deleteMealDone());
+                return dispatch(fetchMeals());
+            },
+            (err) => {
+                dispatch(deleteMealDone());
+                alert('Error deleting meal!');
+            });
+    }
+};

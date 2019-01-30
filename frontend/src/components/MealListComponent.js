@@ -8,7 +8,7 @@ import * as settings from '../settings';
 import history from '../history';
 import {FilterFormContainer} from "../containers/FilterFormContainer";
 import {AddMealContainer} from "../containers/AddMealContainer";
-import {fetchMeals} from "../actions";
+import {deleteMeal, fetchMeals} from "../actions";
 
 class MealList extends Component {
 
@@ -17,7 +17,9 @@ class MealList extends Component {
         this.props.dispatch(fetchMeals());
     };
 
-
+    onDeleteClick = (id, e) => {
+        this.props.dispatch(deleteMeal(id));
+    };
     componentDidMount() {
         if (!this.props.token) {
             history.push('/login/');
@@ -41,9 +43,10 @@ class MealList extends Component {
                     <td className="col-1">{meal.calories}</td>
                     <td className="col-2">
                         <span className="ml-4 btn btn-light">
-                        <i className="fas fa-edit"/></span>
-                        <span className="ml-4 btn btn-light">
-                        <i className="fas fa-trash-alt"/>
+                            <i className="fas fa-edit"/>
+                        </span>
+                        <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, meal.id)} name={meal.id}>
+                            <i className="fas fa-trash-alt"/>
                         </span>
                     </td>
                 </tr>

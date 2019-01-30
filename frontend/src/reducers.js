@@ -26,6 +26,10 @@ const reducer = (state = {}, action) => {
             return {...state, mealFetchingInProgress: true};
         case actionTypes.MEALS_ARE_FETCHED:
             return {...state, mealFetchingInProgress: false};
+        case actionTypes.DELETE_MEAL_START:
+            return {...state, mealDeleteInProgress: true};
+        case actionTypes.DELETE_MEAL_DONE:
+            return {...state, mealDeleteInProgress: false};
         default:
             return state;
     }
