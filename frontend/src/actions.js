@@ -45,12 +45,31 @@ export const closeAddMealModal = () => ({
     type: actionTypes.CLOSE_ADD_MEAL_MODAL
 });
 
+export const openEditMealModal = () => ({
+    type: actionTypes.OPEN_EDIT_MEAL_MODAL
+});
+
+export const closeEditMealModal = () => ({
+    type: actionTypes.CLOSE_EDIT_MEAL_MODAL
+});
+
 export const startFetchingMeals = () => ({
     type: actionTypes.START_FETCHING_MEALS
 });
 
 export const mealsAreFetched = () => ({
     type: actionTypes.MEALS_ARE_FETCHED
+});
+
+export const setMealToEdit = (meal) => ({
+    type: actionTypes.SET_MEAL_TO_EDIT,
+    meal
+});
+
+export const changeEditMeal = (field, value) => ({
+    type: actionTypes.CHANGE_EDIT_MEAL,
+    field,
+    value
 });
 
 export const fetchMeals = () => {

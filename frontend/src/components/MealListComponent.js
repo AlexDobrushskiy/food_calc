@@ -8,7 +8,8 @@ import * as settings from '../settings';
 import history from '../history';
 import {FilterFormContainer} from "../containers/FilterFormContainer";
 import {AddMealContainer} from "../containers/AddMealContainer";
-import {deleteMeal, fetchMeals} from "../actions";
+import {deleteMeal, fetchMeals, setMealToEdit} from "../actions";
+import {EditMealContainer} from "../containers/EditMealContainer";
 
 class MealList extends Component {
 
@@ -25,6 +26,10 @@ class MealList extends Component {
             history.push('/login/');
         }
     }
+    editMealClick = (meal, e) => {
+        this.props.dispatch(setMealToEdit(meal));
+        this.props.openEditMealModal();
+    };
 
     render() {
         if (!this.props.token) {
@@ -42,7 +47,7 @@ class MealList extends Component {
                     <td className="col-4" style={{wordWrap: 'break-word'}}>{meal.text}</td>
                     <td className="col-1">{meal.calories}</td>
                     <td className="col-2">
-                        <span className="ml-4 btn btn-light">
+                        <span className="ml-4 btn btn-light" onClick={this.editMealClick.bind(this, meal)}>
                             <i className="fas fa-edit"/>
                         </span>
                         <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, meal.id)} name={meal.id}>
@@ -103,6 +108,7 @@ class MealList extends Component {
             </table>
             {paginationRow}
             <AddMealContainer/>
+            <EditMealContainer/>
         </Container>
     }
 }

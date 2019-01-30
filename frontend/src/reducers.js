@@ -18,10 +18,16 @@ const reducer = (state = {}, action) => {
             return {...state, maxPage: action.number};
         case actionTypes.SET_FILTER_FIELD:
             return {...state, [action.fieldName]: action.value};
+        case actionTypes.CHANGE_EDIT_MEAL:
+            return {...state, mealToEdit: {...state.mealToEdit, [action.field]: action.value}};
         case actionTypes.OPEN_ADD_MEAL_MODAL:
             return {...state, addMealModalOpened: true};
         case actionTypes.CLOSE_ADD_MEAL_MODAL:
             return {...state, addMealModalOpened: false};
+        case actionTypes.OPEN_EDIT_MEAL_MODAL:
+            return {...state, editMealModalOpened: true};
+        case actionTypes.CLOSE_EDIT_MEAL_MODAL:
+            return {...state, editMealModalOpened: false};
         case actionTypes.START_FETCHING_MEALS:
             return {...state, mealFetchingInProgress: true};
         case actionTypes.MEALS_ARE_FETCHED:
@@ -30,6 +36,8 @@ const reducer = (state = {}, action) => {
             return {...state, mealDeleteInProgress: true};
         case actionTypes.DELETE_MEAL_DONE:
             return {...state, mealDeleteInProgress: false};
+        case actionTypes.SET_MEAL_TO_EDIT:
+            return {...state, mealToEdit: action.meal};
         default:
             return state;
     }

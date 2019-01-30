@@ -16,18 +16,11 @@ const initState = {
     isOpen: false,
     currentPage: 1
 };
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducer,
     initState,
-    applyMiddleware(thunkMiddleware));
+    composeEnhancers(applyMiddleware(thunkMiddleware)));
 
-// const store = createStore(reducer,
-//     initState,
-//     compose(
-//         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-//         applyMiddleware(thunkMiddleware)
-//     ));
-//
 store.subscribe(() => {
     localStorage.setItem('token', store.getState().token);
 });

@@ -5,12 +5,7 @@ import {closeAddMealModal} from '../actions';
 
 const mapStateToProps = state => ({
     isOpen: state.addMealModalOpened,
-    token: state.token,
-    currentPage: state.currentPage,
-    filterDateFrom: state.filterDateFrom,
-    filterDateTo: state.filterDateTo,
-    filterTimeFrom: state.filterTimeFrom,
-    filterTimeTo: state.filterTimeTo
+    token: state.token
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 
 import MealList from '../components/MealListComponent';
-import {saveMealList, setCurrentPage, setMaxPage} from '../actions';
+import {openEditMealModal, saveMealList, setCurrentPage, setMaxPage} from '../actions';
 
 
 const mapStateToProps = state => ({
@@ -20,6 +20,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setMaxPage: (number) => {
         dispatch(setMaxPage(number));
+    },
+    openEditMealModal: () => {
+        dispatch(openEditMealModal())
     },
     dispatch
 });
