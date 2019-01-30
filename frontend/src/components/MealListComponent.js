@@ -38,7 +38,8 @@ class MealList extends Component {
         let meals = [];
         if (this.props.meals !== null) {
             meals = this.props.meals.map((meal, index) => {
-                return <tr key={index}>
+                const rowClass = meal.exceeded_calories_per_day ? 'exceeded' : 'not-exceeded';
+                return <tr key={index} className={rowClass}>
                     <td className="col-1">{meal.date}</td>
                     <td className="col-1">{meal.time}</td>
                     <td className="col-4" style={{wordWrap: 'break-word'}}>{meal.text}</td>

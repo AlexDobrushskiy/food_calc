@@ -184,6 +184,7 @@ export const saveCaloriesSetting = () => {
         axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
             dispatch(closeSettingsModal());
             dispatch(fetchCaloriesSetting());
+            dispatch(fetchMeals());
         }, (err) => {
             alert('Error saving setting!');
             dispatch(closeSettingsModal());
