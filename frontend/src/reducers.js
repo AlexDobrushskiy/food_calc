@@ -21,13 +21,16 @@ const reducer = (state = {}, action) => {
         case actionTypes.CHANGE_EDIT_MEAL:
             return {...state, mealToEdit: {...state.mealToEdit, [action.field]: action.value}};
         case actionTypes.OPEN_ADD_MEAL_MODAL:
-            return {...state, addMealModalOpened: true};
+            return {
+                ...state, addMealModalOpened: true,
+                mealToEdit: {date: '', time: '', text: '', calories: 0}
+            };
         case actionTypes.CLOSE_ADD_MEAL_MODAL:
             return {...state, addMealModalOpened: false};
         case actionTypes.OPEN_EDIT_MEAL_MODAL:
             return {...state, editMealModalOpened: true};
         case actionTypes.CLOSE_EDIT_MEAL_MODAL:
-            return {...state, editMealModalOpened: false};
+            return {...state, editMealModalOpened: false, addMealModalOpened: false};
         case actionTypes.START_FETCHING_MEALS:
             return {...state, mealFetchingInProgress: true};
         case actionTypes.MEALS_ARE_FETCHED:

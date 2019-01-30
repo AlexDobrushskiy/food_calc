@@ -3,13 +3,10 @@ import {
     Container, Row
 } from 'reactstrap';
 import ReactPaginate from 'react-paginate';
-import axios from 'axios';
-import * as settings from '../settings';
 import history from '../history';
 import {FilterFormContainer} from "../containers/FilterFormContainer";
-import {AddMealContainer} from "../containers/AddMealContainer";
 import {deleteMeal, fetchMeals, setMealToEdit} from "../actions";
-import {EditMealContainer} from "../containers/EditMealContainer";
+import {AddEditMealContainer} from "../containers/AddEditMealContainer";
 
 class MealList extends Component {
 
@@ -107,8 +104,7 @@ class MealList extends Component {
                 </tbody>
             </table>
             {paginationRow}
-            <AddMealContainer/>
-            <EditMealContainer/>
+            <AddEditMealContainer/>
         </Container>
     }
 }

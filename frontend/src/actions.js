@@ -49,7 +49,7 @@ export const openEditMealModal = () => ({
     type: actionTypes.OPEN_EDIT_MEAL_MODAL
 });
 
-export const closeEditMealModal = () => ({
+export const closeAddEditMealModal = () => ({
     type: actionTypes.CLOSE_EDIT_MEAL_MODAL
 });
 
@@ -123,6 +123,32 @@ export const deleteMeal = (id) => {
             (err) => {
                 dispatch(deleteMealDone());
                 alert('Error deleting meal!');
+            });
+    }
+};
+
+export const saveEditedMeal = () => {
+    return (dispatch, getState) => {
+        const {token, mealToEdit} = getState();
+        const mealUpdateUrl = mealToEdit.id ? `${settings.MEAL_URL}${mealToEdit.id}/` : settings.MEAL_URL;
+
+        dispatch(deleteMealStart());
+        const data = {
+            date: mealToEdit.date,
+            time: mealToEdit.time,
+            text: mealToEdit.text,
+            calories: mealToEdit.calories
+        };
+        const method = mealToEdit.id ? axios.put : axios.post;
+        return method(mealUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+                dispatch(deleteMealDone());
+                dispatch(setMealToEdit(null));
+                return dispatch(fetchMeals());
+            },
+            (err) => {
+                dispatch(setMealToEdit(null));
+                dispatch(deleteMealDone());
+                alert('Error saving meal!');
             });
     }
 };

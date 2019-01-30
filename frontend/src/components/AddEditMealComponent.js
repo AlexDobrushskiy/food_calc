@@ -8,15 +8,12 @@ import {
     FormGroup,
     Input
 } from 'reactstrap';
-import history from '../history';
-import axios from 'axios';
-import * as settings from '../settings';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import strftime from 'strftime';
-import {changeEditMeal, fetchMeals, setMealToEdit} from "../actions";
+import {changeEditMeal, closeAddEditMealModal, fetchMeals, saveEditedMeal, setMealToEdit} from "../actions";
 
-export class EditMeal extends Component {
+export class AddEditMeal extends Component {
     textChange = (e) => {
         this.props.dispatch(changeEditMeal('text', e.target.value));
     };
@@ -26,18 +23,7 @@ export class EditMeal extends Component {
     };
 
     handleSubmit = () => {
-        const data = {
-            date: this.props.meal.date,
-            time: this.props.meal.time,
-            text: this.props.meal.text,
-            calories: this.props.meal.calories
-        };
-        // show  spinner
-        axios.put(`${settings.MEAL_URL}${this.props.meal.id}/`, data, {headers: {Authorization: 'Token ' + this.props.token}}).then((r) => {
-            return this.props.dispatch(fetchMeals());
-        }).then(() => {
-            this.props.closeEditMealModal();
-        })
+        this.props.dispatch(saveEditedMeal());
     };
     onChangeDatePicker = (datetime) => {
         const date = strftime('%Y-%m-%d', datetime);
@@ -46,19 +32,22 @@ export class EditMeal extends Component {
         this.props.dispatch(changeEditMeal('time', time));
     };
     getMealDate = () => {
-        return this.props.meal ?  new Date(`${this.props.meal.date}T${this.props.meal.time}`) : null;
+        return this.props.meal.date ? new Date(`${this.props.meal.date}T${this.props.meal.time}`) : null;
     };
     onCancel = () => {
         this.props.dispatch(setMealToEdit(null));
-        this.props.closeEditMealModal();
+        this.props.dispatch(closeAddEditMealModal());
     };
     render() {
         if (!this.props.meal) {
             return null;
         }
         const date = this.getMealDate();
-        return <Modal isOpen={this.props.isOpen}>
-            <ModalHeader>Edit Meal</ModalHeader>
+        const header  = this.props.isEditOpen ? 'Edit Meal' : 'Add Meal';
+        const submitBtnText  = this.props.isEditOpen ? 'Edit' : 'Add';
+
+        return <Modal isOpen={this.props.isEditOpen || this.props.isAddOpen}>
+            <ModalHeader>{header}</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
@@ -79,7 +68,7 @@ export class EditMeal extends Component {
                         <Input type="number" min="0" step="1" name="calories" id="idCalories" placeholder="Calories"
                                value={this.props.meal.calories} onChange={this.caloriesChange}/>
                     </FormGroup>
-                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">Submit</Button>
+                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">{submitBtnText}</Button>
                     <Button color="info" onClick={this.onCancel}
                             className="float-right">Cancel</Button>
                 </Form>
