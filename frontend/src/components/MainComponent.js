@@ -6,6 +6,7 @@ import {Container, Row} from 'reactstrap';
 import {LogoutContainer} from "../containers/LogoutContainer";
 import {NavigationContainer} from "../containers/NavigationContainer";
 import {MealListContainer} from "../containers/MealListContainer";
+import {SettingsContainer} from "../containers/SettingsContainer";
 
 class Main extends Component {
     render() {
@@ -25,6 +26,7 @@ class Main extends Component {
                         <Redirect to="/meals"/>
                     </Switch>
                 </div>
+                <SettingsContainer/>
             </div>
         );
     }

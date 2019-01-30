@@ -152,3 +152,42 @@ export const saveEditedMeal = () => {
             });
     }
 };
+
+export const openSettingsModal = () => ({
+    type: actionTypes.OPEN_SETTINGS_MODAL
+});
+
+
+export const closeSettingsModal = () => ({
+    type: actionTypes.CLOSE_SETTINGS_MODAL
+});
+
+export const changeCaloriesSettingValue = (value) => ({
+    type: actionTypes.CHANGE_CALORIES_SETTING_VALUE,
+    value
+});
+
+export const fetchCaloriesSetting = () => {
+    return (dispatch, getState) => {
+        const {token} = getState();
+        axios.get(settings.CALORIES_SETTING_URL, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
+            dispatch(changeCaloriesSettingValue(r.data.value));
+        }, (err) => {
+            alert('Error fetching setting!');
+        });
+    }
+};
+
+export const saveCaloriesSetting = () => {
+    return (dispatch, getState) => {
+        const {token, caloriesSettingsValue} = getState();
+        axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
+            dispatch(closeSettingsModal());
+            dispatch(fetchCaloriesSetting());
+        }, (err) => {
+            alert('Error saving setting!');
+            dispatch(closeSettingsModal());
+            dispatch(fetchCaloriesSetting());
+        });
+    }
+};

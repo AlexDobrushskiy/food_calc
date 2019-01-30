@@ -41,6 +41,12 @@ const reducer = (state = {}, action) => {
             return {...state, mealDeleteInProgress: false};
         case actionTypes.SET_MEAL_TO_EDIT:
             return {...state, mealToEdit: action.meal};
+        case actionTypes.OPEN_SETTINGS_MODAL:
+            return {...state, settingsModalIsOpen: true};
+        case actionTypes.CLOSE_SETTINGS_MODAL:
+            return {...state, settingsModalIsOpen: false};
+        case actionTypes.CHANGE_CALORIES_SETTING_VALUE:
+            return {...state, caloriesSettingsValue: action.value};
         default:
             return state;
     }
