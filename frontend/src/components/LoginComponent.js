@@ -14,30 +14,107 @@ import {
 import history from '../history';
 import axios from 'axios';
 import * as settings from '../settings';
+import {hideUserRegisteredAlert, showUserRegisteredAlert} from "../actions";
 
 
 export class RegisterModal extends Component {
-    handleSubmit = () => {
-        window.alert('Handle Submit');
+    constructor(props) {
+        super(props);
+        this.emptyErrors = {
+            non_field_errors: [],
+            username: [],
+            password1: [],
+            password2: []
+        };
+        this.state = {
+            username: '',
+            password1: '',
+            password2: '',
+            errors: this.emptyErrors
+        }
+    }
+    onChange = (e) => {
+        this.setState({[e.target.name]: e.target.value});
     };
-
+    handleSubmit = () => {
+        const {errors, ...data} = this.state;
+        axios.post(settings.REGISTER_USER_URL, data).then((r)=>{
+            // dispatch registerSuccess
+            // close window
+            this.props.closeRegisterForm();
+            this.props.dispatch(showUserRegisteredAlert());
+        }, (err) => {
+            const errors = JSON.parse(err.request.response);
+            this.setState({errors});
+        });
+    };
+    onCancel = () => {
+        this.props.closeRegisterForm();
+        this.setState({username: '', password1: '', password2: '', errors: this.emptyErrors})
+    };
     render() {
+        let nonFieldErrors = [];
+        if (this.state.errors.non_field_errors) {
+            this.state.errors.non_field_errors.forEach((errorText, index) => {
+                nonFieldErrors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }
+        let usernameErrors = [];
+        if (this.state.errors.username) {
+            this.state.errors.username.forEach((errorText, index) => {
+                usernameErrors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }
+        let password1Errors = [];
+        if (this.state.errors.password1) {
+            this.state.errors.password1.forEach((errorText, index) => {
+                password1Errors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }        
+        let password2Errors = [];
+        if (this.state.errors.password2) {
+            this.state.errors.password2.forEach((errorText, index) => {
+                password2Errors.push(
+                    <div className="login-form-error" key={index}>
+                        {errorText}
+                    </div>
+                );
+            });
+        }        
         return <Modal isOpen={this.props.isOpen}>
             <ModalHeader>Register</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
-                        <Input type="text" name="username" id="idUsername" placeholder="Login"/>
+                        <Input type="text" name="username" id="idUsername" placeholder="Login"
+                        value={this.state.login} onChange={this.onChange}/>
+                        {usernameErrors}
                     </FormGroup>
                     <FormGroup>
-                        <Input type="password" name="password1" id="idPassword1" placeholder="Password"/>
+                        <Input type="password" name="password1" id="idPassword1" placeholder="Password"
+                        value={this.state.password1} onChange={this.onChange}/>
+                        {password1Errors}
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" name="password2" id="idPassword2" placeholder="Repeat password"
-                        />
+                        value={this.state.password2} onChange={this.onChange}/>
+                        {password2Errors}
                     </FormGroup>
+                    {nonFieldErrors}
                     <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">Register</Button>
-                    <Button color="info" onClick={this.props.closeRegisterForm}
+                    <Button color="info" onClick={this.onCancel}
                             className="float-right">Cancel</Button>
                 </Form>
             </ModalBody>
@@ -85,7 +162,7 @@ export class Login extends Component {
             const errors = JSON.parse(err.request.response);
             this.setState({errors});
         });
-
+        this.props.dispatch(hideUserRegisteredAlert());
     };
 
     render() {

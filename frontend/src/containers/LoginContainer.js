@@ -13,7 +13,8 @@ const mapDispatchToProps = dispatch => ({
     },
     saveAPIToken: (token) => {
         dispatch(saveAPIToken(token));
-    }
+    },
+    dispatch
 });
 
 export const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Login);

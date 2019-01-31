@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {RegisterModalContainer} from "../containers/RegisterModalContainer";
 import {LoginContainer} from "../containers/LoginContainer";
 import history from '../history';
+import {UserRegisteredAlertContainer} from "../containers/UserRegisteredAlertContainer";
 
 export class LoginPage extends Component {
     componentDidMount() {
@@ -11,6 +12,7 @@ export class LoginPage extends Component {
     }
     render() {
         return <div className="col-5 offset-3">
+            <UserRegisteredAlertContainer/>
             <RegisterModalContainer/>
             <LoginContainer/>
         </div>;

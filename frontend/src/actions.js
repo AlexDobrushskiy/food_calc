@@ -192,3 +192,12 @@ export const saveCaloriesSetting = () => {
         });
     }
 };
+
+export const showUserRegisteredAlert = ()  => ({
+    type: actionTypes.SHOW_USER_REGISTERED_ALERT
+});
+
+export const hideUserRegisteredAlert = ()  => ({
+    type: actionTypes.HIDE_USER_REGISTERED_ALERT
+});
+

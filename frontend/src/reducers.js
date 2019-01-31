@@ -47,6 +47,10 @@ const reducer = (state = {}, action) => {
             return {...state, settingsModalIsOpen: false};
         case actionTypes.CHANGE_CALORIES_SETTING_VALUE:
             return {...state, caloriesSettingsValue: action.value};
+        case actionTypes.SHOW_USER_REGISTERED_ALERT:
+            return {...state, alertVisible: true};
+        case actionTypes.HIDE_USER_REGISTERED_ALERT:
+            return {...state, alertVisible: false};
         default:
             return state;
     }
