@@ -48,7 +48,7 @@ class MealList extends Component {
                         <span className="ml-4 btn btn-light" onClick={this.editMealClick.bind(this, meal)}>
                             <i className="fas fa-edit"/>
                         </span>
-                        <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, meal.id)} name={meal.id}>
+                        <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, meal.id)}>
                             <i className="fas fa-trash-alt"/>
                         </span>
                     </td>

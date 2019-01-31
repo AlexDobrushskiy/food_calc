@@ -13,6 +13,7 @@ const token = localStorage.getItem('token');
 const initState = {
     token,
     meals: null,
+    users: null,
     isOpen: false,
     currentPage: 1
 };

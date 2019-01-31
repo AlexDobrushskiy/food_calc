@@ -72,6 +72,11 @@ export const changeEditMeal = (field, value) => ({
     value
 });
 
+export const setUserToEdit = (user) => ({
+    type: actionTypes.SET_USER_TO_EDIT,
+    user
+});
+
 export const fetchMeals = () => {
     return (dispatch, getState) => {
         const {currentPage, token, filterDateFrom, filterDateTo, filterTimeFrom, filterTimeTo} = getState();
@@ -201,3 +206,79 @@ export const hideUserRegisteredAlert = ()  => ({
     type: actionTypes.HIDE_USER_REGISTERED_ALERT
 });
 
+export const saveUserList = (users) => ({
+    type: actionTypes.SAVE_USER_LIST,
+    users
+});
+
+
+export const fetchUsers = () => {
+    return (dispatch, getState) => {
+        const {token} = getState();
+        dispatch(startFetchingMeals);
+        return axios.get(settings.USER_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+            dispatch(saveUserList(r.data.results));
+            return dispatch(mealsAreFetched);
+        }, (err) => {
+            alert('Error fetching users');
+            return dispatch(mealsAreFetched);
+        });
+    }
+};
+
+export const deleteUser = (id) => {
+    return (dispatch, getState) => {
+        const {token} = getState();
+        const userDeleteUrl = `${settings.USER_URL}${id}/`;
+        dispatch(deleteMealStart());
+        return axios.delete(userDeleteUrl, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+                dispatch(deleteMealDone());
+                return dispatch(fetchUsers());
+            },
+            (err) => {
+                dispatch(deleteMealDone());
+                alert('Error deleting user!');
+            });
+    }
+};
+
+export const openEditUserModal = () => ({
+    type: actionTypes.OPEN_EDIT_USER_MODAL
+});
+
+export const closeAddEditUserModal = () => ({
+    type: actionTypes.CLOSE_EDIT_USER_MODAL
+});
+
+export const changeEditUser = (field, value) => ({
+    type: actionTypes.CHANGE_EDIT_USER,
+    field,
+    value
+});
+
+export const saveEditedUser = () => {
+    return (dispatch, getState) => {
+        const {token, userToEdit} = getState();
+        const userUpdateUrl = userToEdit.id ? `${settings.USER_URL}${userToEdit.id}/` : settings.USER_URL;
+
+        dispatch(deleteMealStart());
+        const data = {
+            username: userToEdit.username,
+            role: userToEdit.role
+        };
+        if (userToEdit.password) {
+            data.password = userToEdit.password
+        }
+        const method = userToEdit.id ? axios.patch : axios.post;
+        return method(userUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+                dispatch(deleteMealDone());
+                dispatch(setUserToEdit(null));
+                return dispatch(fetchUsers());
+            },
+            (err) => {
+                dispatch(setUserToEdit(null));
+                dispatch(deleteMealDone());
+                alert('Error saving user!');
+            });
+    }
+};

@@ -20,6 +20,8 @@ const reducer = (state = {}, action) => {
             return {...state, [action.fieldName]: action.value};
         case actionTypes.CHANGE_EDIT_MEAL:
             return {...state, mealToEdit: {...state.mealToEdit, [action.field]: action.value}};
+        case actionTypes.CHANGE_EDIT_USER:
+            return {...state, userToEdit: {...state.userToEdit, [action.field]: action.value}};
         case actionTypes.OPEN_ADD_MEAL_MODAL:
             return {
                 ...state, addMealModalOpened: true,
@@ -51,6 +53,22 @@ const reducer = (state = {}, action) => {
             return {...state, alertVisible: true};
         case actionTypes.HIDE_USER_REGISTERED_ALERT:
             return {...state, alertVisible: false};
+        case actionTypes.SAVE_USER_LIST:
+            return {...state, users: action.users};
+        case actionTypes.SET_USER_TO_EDIT:
+            return {...state, userToEdit: action.user};
+        case actionTypes.OPEN_ADD_USER_MODAL:
+            return {
+                ...state, addUserModalOpened: true,
+                userToEdit: {username: '', password: ''}
+            };
+        case actionTypes.CLOSE_ADD_USER_MODAL:
+            return {...state, addUserModalOpened: false};
+        case actionTypes.OPEN_EDIT_USER_MODAL:
+            return {...state, editUserModalOpened: true};
+        case actionTypes.CLOSE_EDIT_USER_MODAL:
+            return {...state, editUserModalOpened: false, addUserModalOpened: false};
+
         default:
             return state;
     }

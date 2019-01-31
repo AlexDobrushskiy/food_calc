@@ -65,6 +65,22 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.get('password')
+        if password:
+            del validated_data['password']
+        instance = super(UserSerializer, self).update(instance, validated_data)
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+
+        return instance
+
 
 class UserSerializerWithRoleReadOnly(serializers.ModelSerializer):
     class Meta:
@@ -88,10 +104,8 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminOrManager)
 
     def get_serializer_class(self):
-        if self.request.user.role == USER_ROLE_ADMIN:
+        if self.request.user.role in (USER_ROLE_ADMIN, USER_ROLE_MANAGER):
             return UserSerializer
-        if self.request.user.role == USER_ROLE_MANAGER:
-            return UserSerializerWithRoleReadOnly
         raise PermissionDenied
 
 
