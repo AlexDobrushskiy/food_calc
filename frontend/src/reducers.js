@@ -60,7 +60,7 @@ const reducer = (state = {}, action) => {
         case actionTypes.OPEN_ADD_USER_MODAL:
             return {
                 ...state, addUserModalOpened: true,
-                userToEdit: {username: '', password: ''}
+                userToEdit: {username: '', password: '', role: 0}
             };
         case actionTypes.CLOSE_ADD_USER_MODAL:
             return {...state, addUserModalOpened: false};

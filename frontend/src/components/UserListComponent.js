@@ -6,12 +6,13 @@ import ReactPaginate from 'react-paginate';
 import history from '../history';
 import {FilterFormContainer} from "../containers/FilterFormContainer";
 import {
-    deleteMeal, deleteUser, fetchMeals, fetchUsers, openEditUserModal, setMealToEdit,
+    deleteMeal, deleteUser, fetchMeals, fetchUsers, openAddUserModal, openEditUserModal, setMealToEdit,
     setUserToEdit
 } from "../actions";
 import {AddEditMealContainer} from "../containers/AddEditMealContainer";
 import * as settings from '../settings';
 import {AddEditUserContainer} from "../containers/AddEditUserContainer";
+
 export class UserList extends Component {
 
     onDeleteClick = (id, e) => {
@@ -29,6 +30,9 @@ export class UserList extends Component {
         this.props.dispatch(openEditUserModal());
     };
 
+    addUserClick = () => {
+        this.props.dispatch(openAddUserModal());
+    };
     render() {
         if (!this.props.token) {
             return null;
@@ -55,6 +59,12 @@ export class UserList extends Component {
         }
 
         return <Container>
+            <form className="form-inline mb-4">
+                <button className="btn btn-secondary mr-4 btn-success" type="button"
+                        onClick={this.addUserClick}>
+                    Add user
+                </button>
+            </form>
             <table className="table" style={{tableLayout: 'fixed'}}>
                 <thead>
                 <tr>

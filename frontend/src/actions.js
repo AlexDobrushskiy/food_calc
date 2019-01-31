@@ -246,6 +246,10 @@ export const openEditUserModal = () => ({
     type: actionTypes.OPEN_EDIT_USER_MODAL
 });
 
+export const openAddUserModal = () => ({
+    type: actionTypes.OPEN_ADD_USER_MODAL
+});
+
 export const closeAddEditUserModal = () => ({
     type: actionTypes.CLOSE_EDIT_USER_MODAL
 });

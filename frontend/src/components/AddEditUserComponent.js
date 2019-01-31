@@ -51,11 +51,11 @@ export class AddEditUser extends Component {
                 <Form>
                     <FormGroup>
                         <Input type="text" name="username" id="idUsername" placeholder="Username"
-                               value={this.props.user.username} onChange={this.usernameChange}/>
+                               value={this.props.user.username} onChange={this.usernameChange} autoComplete="new-password"/>
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" min="0" step="1" name="password" id="idPassword" placeholder="Password"
-                               value={this.props.user.password} onChange={this.passwordChange}/>
+                               value={this.props.user.password} onChange={this.passwordChange}  autoComplete="new-password"/>
                     </FormGroup>
                     <FormGroup>
                         <select name="role" id="idRole" className="custom-select" value={this.props.user.role}
