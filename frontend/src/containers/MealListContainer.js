@@ -8,7 +8,8 @@ const mapStateToProps = state => ({
     meals: state.meals,
     token: state.token,
     currentPage: state.currentPage,
-    maxPage: state.maxPage
+    maxPage: state.maxPage,
+    userInfo: state.userInfo
 });
 
 const mapDispatchToProps = dispatch => ({

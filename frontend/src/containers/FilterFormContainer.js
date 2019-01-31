@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
     filterTimeTo: state.filterTimeTo,
     currentPage: state.currentPage,
     token: state.token,
-    mealFetchingInProgress: state.mealFetchingInProgress
+    ajaxInProgress: state.ajaxInProgress
 });
 
 const mapDispatchToProps = dispatch => ({

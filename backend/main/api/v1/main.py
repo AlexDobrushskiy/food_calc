@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.expressions import RawSQL
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
+from rest_auth.views import UserDetailsView
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CurrentUserDefault
@@ -125,7 +126,7 @@ class MaxCaloriesSettingView(RetrieveUpdateAPIView):
         return obj
 
 
-class UserDetailsView(RetrieveUpdateAPIView):
+class UserInfoView(UserDetailsView):
     """
     Reads and updates UserModel fields
     Accepts GET, PUT, PATCH methods.
@@ -137,15 +138,3 @@ class UserDetailsView(RetrieveUpdateAPIView):
     Returns UserModel fields.
     """
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        return self.request.user
-
-    def get_queryset(self):
-        """
-        Adding this method since it is sometimes called when using
-        django-rest-swagger
-        https://github.com/Tivix/django-rest-auth/issues/275
-        """
-        return get_user_model().objects.none()

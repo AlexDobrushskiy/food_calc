@@ -3,7 +3,8 @@ import axios from 'axios';
 import * as settings from '../settings';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {fetchMeals} from "../actions";
+import {fetchMeals, startAjax} from "../actions";
+import {Spinner} from "./SpinnerComponent";
 
 export class FilterForm extends Component {
     onChangeDateFrom = (date) => {
@@ -28,8 +29,6 @@ export class FilterForm extends Component {
         let maxTime = new Date();
         maxTime.setHours(23);
         maxTime.setMinutes(59);
-        const spinner = this.props.mealFetchingInProgress ?
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/> : null;
         return <form className="form-inline mb-4">
             <button className="btn btn-secondary mr-4 btn-success" type="button" onClick={this.props.openAddMealModal}>
                 Add meal
@@ -76,8 +75,8 @@ export class FilterForm extends Component {
                     />
                 </div>
                 <button type="button" className="btn btn-outline-secondary ml-3" onClick={this.onFilterClick}
-                        disabled={this.props.mealFetchingInProgress}>
-                    {spinner}
+                        disabled={this.props.ajaxInProgress}>
+                    <Spinner show={this.props.ajaxInProgress}/>
                     Filter
                 </button>
             </div>

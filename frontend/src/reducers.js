@@ -34,14 +34,10 @@ const reducer = (state = {}, action) => {
             return {...state, editMealModalOpened: true};
         case actionTypes.CLOSE_EDIT_MEAL_MODAL:
             return {...state, editMealModalOpened: false, addMealModalOpened: false};
-        case actionTypes.START_FETCHING_MEALS:
-            return {...state, mealFetchingInProgress: true};
-        case actionTypes.MEALS_ARE_FETCHED:
-            return {...state, mealFetchingInProgress: false};
-        case actionTypes.DELETE_MEAL_START:
-            return {...state, mealDeleteInProgress: true};
-        case actionTypes.DELETE_MEAL_DONE:
-            return {...state, mealDeleteInProgress: false};
+        case actionTypes.START_AJAX:
+            return {...state, ajaxInProgress: true};
+        case actionTypes.STOP_AJAX:
+            return {...state, ajaxInProgress: false};
         case actionTypes.SET_MEAL_TO_EDIT:
             return {...state, mealToEdit: action.meal};
         case actionTypes.OPEN_SETTINGS_MODAL:
