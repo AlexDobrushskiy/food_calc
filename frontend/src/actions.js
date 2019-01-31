@@ -286,3 +286,28 @@ export const saveEditedUser = () => {
             });
     }
 };
+
+
+export const saveUserInfo = (userInfo) => ({
+    type: actionTypes.SAVE_USER_INFO,
+    userInfo
+});
+
+
+export const fetchUserInfo = () => {
+    return (dispatch, getState) => {
+        const {token} = getState();
+        dispatch(startFetchingMeals);
+        return axios.get(settings.USER_INFO_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+            dispatch(saveUserInfo(r.data));
+            return dispatch(mealsAreFetched);
+        }, (err) => {
+            alert('Error fetching users');
+            return dispatch(mealsAreFetched);
+        });
+    }
+};
+
+export const resetStore = () => ({
+    type: actionTypes.RESET_STORE
+});

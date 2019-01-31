@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import history from '../history';
-import {fetchCaloriesSetting, openSettingsModal} from "../actions";
+import {fetchCaloriesSetting, fetchUserInfo, openSettingsModal} from "../actions";
 
 export class Navigation extends Component {
 
@@ -22,19 +22,35 @@ export class Navigation extends Component {
         if (!this.props.token) {
             return null;
         }
-        return <ul className="list-inline">
-            <li className="list-inline-item">
-                <span className="btn btn-light" onClick={this.settingsClick}>Settings</span>
-            </li>
-            <li className="list-inline-item">
-                <span className="btn btn-light" onClick={this.mealListClick}>MealList</span>
-            </li>
-            <li className="list-inline-item">
-                <span className="btn btn-light" onClick={this.userListClick}>UserList</span>
-            </li>
-            <li className="list-inline-item">
-                <span className="btn btn-light" onClick={this.logoutClick}>Logout</span>
-            </li>
-        </ul>;
+        if (this.props.token && !this.props.userInfo.username) {
+            this.props.dispatch(fetchUserInfo());
+        }
+        if (this.props.userInfo.role > 0) {
+            return <ul className="list-inline">
+                <li className="list-inline-item">
+                    <span className="btn btn-light" onClick={this.settingsClick}>Settings</span>
+                </li>
+                <li className="list-inline-item">
+                    <span className="btn btn-light" onClick={this.mealListClick}>MealList</span>
+                </li>
+                <li className="list-inline-item">
+                    <span className="btn btn-light" onClick={this.userListClick}>UserList</span>
+                </li>
+                <li className="list-inline-item">
+                    <span className="btn btn-light"
+                          onClick={this.logoutClick}>Logout({this.props.userInfo.username})</span>
+                </li>
+            </ul>;
+        } else {
+            return <ul className="list-inline">
+                <li className="list-inline-item">
+                    <span className="btn btn-light" onClick={this.settingsClick}>Settings</span>
+                </li>
+                <li className="list-inline-item">
+                    <span className="btn btn-light"
+                          onClick={this.logoutClick}>Logout({this.props.userInfo.username})</span>
+                </li>
+            </ul>;
+        }
     }
 }

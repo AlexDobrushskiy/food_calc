@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import {initialState} from './App';
 
 const reducer = (state = {}, action) => {
     switch (action.type) {
@@ -68,6 +69,10 @@ const reducer = (state = {}, action) => {
             return {...state, editUserModalOpened: true};
         case actionTypes.CLOSE_EDIT_USER_MODAL:
             return {...state, editUserModalOpened: false, addUserModalOpened: false};
+        case actionTypes.SAVE_USER_INFO:
+            return {...state, userInfo: action.userInfo};
+        case actionTypes.RESET_STORE:
+            return {...initialState};
 
         default:
             return state;

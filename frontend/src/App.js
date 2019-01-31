@@ -10,16 +10,18 @@ import history from './history';
 import './App.css';
 
 const token = localStorage.getItem('token');
-const initState = {
-    token,
+export const initialState = {
+    token: '',
     meals: null,
     users: null,
     isOpen: false,
-    currentPage: 1
+    currentPage: 1,
+    userInfo: {username: ''}
 };
+const defaultState = {...initialState, token};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducer,
-    initState,
+    defaultState,
     composeEnhancers(applyMiddleware(thunkMiddleware)));
 
 store.subscribe(() => {

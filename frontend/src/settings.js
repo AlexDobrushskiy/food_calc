@@ -7,6 +7,7 @@ export const MEAL_URL = HOST_NAME + '/api/v1/meal/';
 export const CALORIES_SETTING_URL = HOST_NAME + '/api/v1/max_calories/';
 export const REGISTER_USER_URL = HOST_NAME + '/rest-auth/registration/';
 export const USER_URL = HOST_NAME + '/api/v1/user/';
+export const USER_INFO_URL = HOST_NAME + '/api/v1/user_info/';
 
 export const ROLES = {
     0: 'User',
