@@ -10,7 +10,7 @@ export class UserRegisteredAlert extends Component {
             setTimeout(() => {this.props.dispatch(hideUserRegisteredAlert());}, 3000);
         }
         return <Alert className="alert alert-secondary alert-dismissible fade show" role="alert">
-            User <strong>username</strong> was succesfully registered.
+            User was succesfully created.
         </Alert>;
 
     }

@@ -67,6 +67,10 @@ const reducer = (state = {}, action) => {
             return {...state, editUserModalOpened: false, addUserModalOpened: false};
         case actionTypes.SAVE_USER_INFO:
             return {...state, userInfo: action.userInfo};
+        case actionTypes.SET_MEAL_ERRORS:
+            return {...state, mealErrors: action.errors};
+        case actionTypes.SET_SETTING_ERRORS:
+            return {...state, settingErrors: action.errors};
         case actionTypes.RESET_STORE:
             return {...initialState};
 

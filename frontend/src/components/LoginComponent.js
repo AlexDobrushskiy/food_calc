@@ -16,6 +16,7 @@ import axios from 'axios';
 import * as settings from '../settings';
 import {hideUserRegisteredAlert, showUserRegisteredAlert, startAjax, stopAjax} from "../actions";
 import {Spinner} from "./SpinnerComponent";
+import {getRenderedErrors} from "../utils";
 
 
 export class RegisterModal extends Component {
@@ -36,18 +37,16 @@ export class RegisterModal extends Component {
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value});
+        this.setState({[e.target.name]: e.target.value, errors: this.emptyErrors});
     };
     handleSubmit = () => {
         const {errors, ...data} = this.state;
         axios.post(settings.REGISTER_USER_URL, data).then((r) => {
-            // dispatch registerSuccess
-            // close window
             this.props.closeRegisterForm();
             this.props.dispatch(showUserRegisteredAlert());
         }, (err) => {
-            const errors = JSON.parse(err.request.response);
-            this.setState({errors});
+            const errors = err.response.data;
+            this.setState({errors: {...this.state.errors, ...errors}});
         });
     };
     onCancel = () => {
@@ -56,46 +55,10 @@ export class RegisterModal extends Component {
     };
 
     render() {
-        let nonFieldErrors = [];
-        if (this.state.errors.non_field_errors) {
-            this.state.errors.non_field_errors.forEach((errorText, index) => {
-                nonFieldErrors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
-        let usernameErrors = [];
-        if (this.state.errors.username) {
-            this.state.errors.username.forEach((errorText, index) => {
-                usernameErrors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
-        let password1Errors = [];
-        if (this.state.errors.password1) {
-            this.state.errors.password1.forEach((errorText, index) => {
-                password1Errors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
-        let password2Errors = [];
-        if (this.state.errors.password2) {
-            this.state.errors.password2.forEach((errorText, index) => {
-                password2Errors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
+        let nonFieldErrors = getRenderedErrors(this.state.errors.non_field_errors);
+        let usernameErrors = getRenderedErrors(this.state.errors.username);
+        let password1Errors = getRenderedErrors(this.state.errors.password1);
+        let password2Errors = getRenderedErrors(this.state.errors.password2);
         return <Modal isOpen={this.props.isOpen}>
             <ModalHeader>Register</ModalHeader>
             <ModalBody>
@@ -164,44 +127,17 @@ export class Login extends Component {
             this.props.saveAPIToken(token);
             this.props.dispatch(stopAjax());
         }).catch((err) => {
-            const errors = JSON.parse(err.request.response);
-            this.setState({errors});
+            const errors = err.response.data;
+            this.setState({errors: {...this.state.errors, ...errors}});
             this.props.dispatch(stopAjax());
         });
         this.props.dispatch(hideUserRegisteredAlert());
     };
 
     render() {
-        let nonFieldErrors = [];
-        if (this.state.errors.non_field_errors) {
-            this.state.errors.non_field_errors.forEach((errorText, index) => {
-                nonFieldErrors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
-        let usernameErrors = [];
-        if (this.state.errors.username) {
-            this.state.errors.username.forEach((errorText, index) => {
-                usernameErrors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
-        let passwordErrors = [];
-        if (this.state.errors.password) {
-            this.state.errors.password.forEach((errorText, index) => {
-                passwordErrors.push(
-                    <div className="login-form-error" key={index}>
-                        {errorText}
-                    </div>
-                );
-            });
-        }
+        let nonFieldErrors = getRenderedErrors(this.state.errors.non_field_errors);
+        let usernameErrors = getRenderedErrors(this.state.errors.username);
+        let passwordErrors = getRenderedErrors(this.state.errors.password);
 
         return (
             <Container className="text-center">

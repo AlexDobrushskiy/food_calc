@@ -124,9 +124,20 @@ export const deleteMeal = (id) => {
     }
 };
 
+export const setMealErrors = (errors) => ({
+    type: actionTypes.SET_MEAL_ERRORS,
+    errors
+});
+
+export const setSettingErrors = (errors) => ({
+    type: actionTypes.SET_SETTING_ERRORS,
+    errors
+});
+
+
 export const saveEditedMeal = () => {
     return (dispatch, getState) => {
-        const {token, mealToEdit} = getState();
+        const {token, mealToEdit, mealErrors} = getState();
         const mealUpdateUrl = mealToEdit.id ? `${settings.MEAL_URL}${mealToEdit.id}/` : settings.MEAL_URL;
 
         dispatch(startAjax());
@@ -146,9 +157,8 @@ export const saveEditedMeal = () => {
                 return dispatch(fetchMeals());
             },
             (err) => {
-                dispatch(setMealToEdit(null));
                 dispatch(stopAjax());
-                alert('Error saving meal!');
+                dispatch(setMealErrors({...mealErrors, ...err.response.data}));
             });
     }
 };
@@ -180,15 +190,13 @@ export const fetchCaloriesSetting = () => {
 
 export const saveCaloriesSetting = () => {
     return (dispatch, getState) => {
-        const {token, caloriesSettingsValue} = getState();
+        const {token, caloriesSettingsValue, settingErrors} = getState();
         axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
             dispatch(closeSettingsModal());
             dispatch(fetchCaloriesSetting());
             dispatch(fetchMeals());
         }, (err) => {
-            alert('Error saving setting!');
-            dispatch(closeSettingsModal());
-            dispatch(fetchCaloriesSetting());
+            dispatch(setSettingErrors({...settingErrors, ...err.response.data}));
         });
     }
 };

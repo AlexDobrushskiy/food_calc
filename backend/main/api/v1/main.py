@@ -5,7 +5,7 @@ from django_filters import rest_framework as filters
 from rest_auth.views import UserDetailsView
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.fields import CurrentUserDefault
+from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
@@ -15,7 +15,8 @@ from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, Calories
 class MealUserSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=CurrentUserDefault())
     exceeded_calories_per_day = serializers.ReadOnlyField()
-
+    calories = IntegerField(min_value=0)
+    
     class Meta:
         model = Meal
         fields = ('date', 'time', 'text', 'calories', 'user', 'id', 'exceeded_calories_per_day',)
@@ -26,7 +27,7 @@ class MealAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Meal
-        fields = ('date', 'time', 'text', 'calories', 'user', 'id','exceeded_calories_per_day')
+        fields = ('date', 'time', 'text', 'calories', 'user', 'id', 'exceeded_calories_per_day')
 
 
 class MealFilter(filters.FilterSet):
@@ -114,6 +115,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class CaloriesPerDaySerializer(serializers.ModelSerializer):
+    value = IntegerField(min_value=0)
+
     class Meta:
         model = CaloriesPerDay
         fields = ('value',)

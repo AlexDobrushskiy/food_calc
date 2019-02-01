@@ -4,7 +4,8 @@ import {Settings} from '../components/SettingsComponent';
 
 const mapStateToProps = state => ({
     isOpen: state.settingsModalIsOpen,
-    value: state.caloriesSettingsValue
+    value: state.caloriesSettingsValue,
+    errors: state.settingErrors
 });
 
 const mapDispatchToProps = dispatch => ({

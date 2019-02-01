@@ -44,7 +44,7 @@ class Meal(models.Model):
     date = models.DateField()
     time = models.TimeField()
     text = models.CharField(max_length=100)
-    calories = models.IntegerField()
+    calories = models.PositiveIntegerField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
 

@@ -5,7 +5,8 @@ import {AddEditMeal} from '../components/AddEditMealComponent';
 const mapStateToProps = state => ({
     isEditOpen: state.editMealModalOpened,
     isAddOpen: state.addMealModalOpened,
-    meal: state.mealToEdit
+    meal: state.mealToEdit,
+    errors: state.mealErrors
 });
 
 const mapDispatchToProps = dispatch => ({

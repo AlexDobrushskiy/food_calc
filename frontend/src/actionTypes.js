@@ -28,3 +28,5 @@ export const SAVE_USER_INFO = 'SAVE_USER_INFO';
 export const RESET_STORE = 'RESET_STORE';
 export const START_AJAX = 'START_AJAX';
 export const STOP_AJAX = 'STOP_AJAX';
+export const SET_MEAL_ERRORS = 'SET_MEAL_ERRORS';
+export const SET_SETTING_ERRORS = 'SET_SETTING_ERRORS';

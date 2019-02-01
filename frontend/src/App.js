@@ -10,6 +10,17 @@ import history from './history';
 import './App.css';
 
 const token = localStorage.getItem('token');
+export const emptyMealErrors = {
+    calories: [],
+    date: [],
+    text: [],
+    time: [],
+    non_field_errors: []
+};
+export const emptySettingErrors = {
+    value: [],
+    non_field_errors: []
+};
 export const initialState = {
     token: '',
     meals: null,
@@ -17,7 +28,9 @@ export const initialState = {
     isOpen: false,
     currentPage: 1,
     userInfo: {username: ''},
-    ajaxInProgress: false
+    ajaxInProgress: false,
+    mealErrors: emptyMealErrors,
+    settingErrors: emptySettingErrors
 };
 const defaultState = {...initialState, token};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
