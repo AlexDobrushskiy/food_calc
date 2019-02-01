@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
     filterTimeTo: state.filterTimeTo,
     currentPage: state.currentPage,
     token: state.token,
-    ajaxInProgress: state.ajaxInProgress
+    ajaxInProgress: state.ajaxInProgress.common
 });
 
 const mapDispatchToProps = dispatch => ({

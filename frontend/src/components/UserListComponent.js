@@ -47,7 +47,7 @@ export class UserList extends Component {
                     <td className="col-1">{user.username}</td>
                     <td className="col-1">{settings.ROLES[user.role]}</td>
                     <td className="col-2">
-                        <span className="ml-4 btn btn-light" onClick={this.editUserClick.bind(this, user)}>
+                        <span className="btn btn-light" onClick={this.editUserClick.bind(this, user)}>
                             <i className="fas fa-edit"/>
                         </span>
                         <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, user.id)}>

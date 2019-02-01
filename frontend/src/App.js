@@ -21,16 +21,31 @@ export const emptySettingErrors = {
     value: [],
     non_field_errors: []
 };
+export const emptyUserErrors = {
+    username: [],
+    password: [],
+    role: [],
+    non_field_errors: []
+};
+const initialAjaxInProgress = {
+    common: false,
+    meal: false,
+    user: false,
+    setting: false
+};
+
+
 export const initialState = {
     token: '',
     meals: null,
     users: null,
     isOpen: false,
     currentPage: 1,
-    userInfo: {username: ''},
-    ajaxInProgress: false,
+    userInfo: {username: '', role: 0},
+    ajaxInProgress: initialAjaxInProgress,
     mealErrors: emptyMealErrors,
-    settingErrors: emptySettingErrors
+    settingErrors: emptySettingErrors,
+    userErrors: emptyUserErrors
 };
 const defaultState = {...initialState, token};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

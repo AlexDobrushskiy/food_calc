@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import axios from 'axios';
 import * as settings from './settings';
 import strftime from 'strftime';
+import history from './history';
 
 export const openRegisterForm = () => ({
     type: actionTypes.OPEN_REGISTER_FORM
@@ -53,12 +54,14 @@ export const closeAddEditMealModal = () => ({
     type: actionTypes.CLOSE_EDIT_MEAL_MODAL
 });
 
-export const startAjax = () => ({
-    type: actionTypes.START_AJAX
+export const startAjax = (entity) => ({
+    type: actionTypes.START_AJAX,
+    entity
 });
 
-export const stopAjax = () => ({
-    type: actionTypes.STOP_AJAX
+export const stopAjax = (entity) => ({
+    type: actionTypes.STOP_AJAX,
+    entity
 });
 
 export const setMealToEdit = (meal) => ({
@@ -80,7 +83,7 @@ export const setUserToEdit = (user) => ({
 export const fetchMeals = () => {
     return (dispatch, getState) => {
         const {currentPage, token, filterDateFrom, filterDateTo, filterTimeFrom, filterTimeTo} = getState();
-        dispatch(startAjax());
+        dispatch(startAjax('meal'));
         let mealRequestUrl = `${settings.MEAL_URL}?page=${currentPage}&`;
 
         if (filterDateFrom) {
@@ -100,10 +103,14 @@ export const fetchMeals = () => {
             dispatch(saveMealList(r.data.results));
             dispatch(setCurrentPage(r.data.current_page));
             dispatch(setMaxPage(r.data.max_page));
-            return dispatch(stopAjax());
+            return dispatch(stopAjax('meal'));
         }, (err) => {
-            alert('Error fetching meals');
-            return dispatch(stopAjax());
+            dispatch(stopAjax('meal'));
+            if ([401, 403].some(i => i === err.response.status)) {
+                history.push('/logout');
+            } else {
+                alert('Error fetching meals');
+            }
         });
     }
 };
@@ -112,14 +119,18 @@ export const deleteMeal = (id) => {
     return (dispatch, getState) => {
         const {token} = getState();
         const mealDeleteUrl = `${settings.MEAL_URL}${id}/`;
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         return axios.delete(mealDeleteUrl, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax());
+                dispatch(stopAjax('common'));
                 return dispatch(fetchMeals());
             },
             (err) => {
-                dispatch(stopAjax());
-                alert('Error deleting meal!');
+                dispatch(stopAjax('common'));
+                if ([401, 403].some(i => i === err.response.status)) {
+                    history.push('/logout');
+                } else {
+                    alert('Error deleting meal!');
+                }
             });
     }
 };
@@ -134,30 +145,35 @@ export const setSettingErrors = (errors) => ({
     errors
 });
 
+export const setUserErrors = (errors) => ({
+    type: actionTypes.SET_USER_ERRORS,
+    errors
+});
+
 
 export const saveEditedMeal = () => {
     return (dispatch, getState) => {
         const {token, mealToEdit, mealErrors} = getState();
         const mealUpdateUrl = mealToEdit.id ? `${settings.MEAL_URL}${mealToEdit.id}/` : settings.MEAL_URL;
 
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         let data = {
             date: mealToEdit.date,
             time: mealToEdit.time,
             text: mealToEdit.text,
             calories: mealToEdit.calories
         };
-        if (mealToEdit.user)  {
+        if (mealToEdit.user) {
             data.user = mealToEdit.user;
         }
         const method = mealToEdit.id ? axios.put : axios.post;
         return method(mealUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax());
+                dispatch(stopAjax('common'));
                 dispatch(setMealToEdit(null));
                 return dispatch(fetchMeals());
             },
             (err) => {
-                dispatch(stopAjax());
+                dispatch(stopAjax('common'));
                 dispatch(setMealErrors({...mealErrors, ...err.response.data}));
             });
     }
@@ -180,18 +196,23 @@ export const changeCaloriesSettingValue = (value) => ({
 export const fetchCaloriesSetting = () => {
     return (dispatch, getState) => {
         const {token} = getState();
-        axios.get(settings.CALORIES_SETTING_URL, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
-            dispatch(changeCaloriesSettingValue(r.data.value));
-        }, (err) => {
-            alert('Error fetching setting!');
-        });
+        axios.get(settings.CALORIES_SETTING_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
+                dispatch(changeCaloriesSettingValue(r.data.value));
+            }, (err) => {
+                if ([401, 403].some(i => i === err.response.status)) {
+                    history.push('/logout');
+                } else {
+                    alert('Error fetching setting!');
+                }
+            }
+        );
     }
 };
 
 export const saveCaloriesSetting = () => {
     return (dispatch, getState) => {
         const {token, caloriesSettingsValue, settingErrors} = getState();
-        axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r)=>{
+        axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r) => {
             dispatch(closeSettingsModal());
             dispatch(fetchCaloriesSetting());
             dispatch(fetchMeals());
@@ -201,11 +222,11 @@ export const saveCaloriesSetting = () => {
     }
 };
 
-export const showUserRegisteredAlert = ()  => ({
+export const showUserRegisteredAlert = () => ({
     type: actionTypes.SHOW_USER_REGISTERED_ALERT
 });
 
-export const hideUserRegisteredAlert = ()  => ({
+export const hideUserRegisteredAlert = () => ({
     type: actionTypes.HIDE_USER_REGISTERED_ALERT
 });
 
@@ -218,13 +239,16 @@ export const saveUserList = (users) => ({
 export const fetchUsers = () => {
     return (dispatch, getState) => {
         const {token} = getState();
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         return axios.get(settings.USER_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
             dispatch(saveUserList(r.data.results));
-            return dispatch(stopAjax());
+            return dispatch(stopAjax('common'));
         }, (err) => {
-            alert('Error fetching users');
-            return dispatch(stopAjax());
+            if ([401, 403].some(i => i === err.response.status)) {
+                history.push('/logout');
+            }
+
+            return dispatch(stopAjax('common'));
         });
     }
 };
@@ -233,14 +257,17 @@ export const deleteUser = (id) => {
     return (dispatch, getState) => {
         const {token} = getState();
         const userDeleteUrl = `${settings.USER_URL}${id}/`;
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         return axios.delete(userDeleteUrl, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax());
+                dispatch(stopAjax('common'));
                 return dispatch(fetchUsers());
             },
             (err) => {
-                dispatch(stopAjax());
-                alert('Error deleting user!');
+                if ([401, 403].some(i => i === err.response.status)) {
+                    history.push('/logout');
+                }
+
+                dispatch(stopAjax('common'));
             });
     }
 };
@@ -265,10 +292,9 @@ export const changeEditUser = (field, value) => ({
 
 export const saveEditedUser = () => {
     return (dispatch, getState) => {
-        const {token, userToEdit} = getState();
+        const {token, userToEdit, userErrors} = getState();
         const userUpdateUrl = userToEdit.id ? `${settings.USER_URL}${userToEdit.id}/` : settings.USER_URL;
-
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         const data = {
             username: userToEdit.username,
             role: userToEdit.role
@@ -278,14 +304,13 @@ export const saveEditedUser = () => {
         }
         const method = userToEdit.id ? axios.patch : axios.post;
         return method(userUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax());
+                dispatch(stopAjax('common'));
                 dispatch(setUserToEdit(null));
                 return dispatch(fetchUsers());
             },
             (err) => {
-                dispatch(setUserToEdit(null));
-                dispatch(stopAjax());
-                alert('Error saving user!');
+                dispatch(setUserErrors({...userErrors, ...err.response.data}));
+                dispatch(stopAjax('common'));
             });
     }
 };
@@ -300,13 +325,17 @@ export const saveUserInfo = (userInfo) => ({
 export const fetchUserInfo = () => {
     return (dispatch, getState) => {
         const {token} = getState();
-        dispatch(startAjax());
+        dispatch(stopAjax('common'));
         return axios.get(settings.USER_INFO_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
             dispatch(saveUserInfo(r.data));
-            return dispatch(stopAjax());
+            return dispatch(stopAjax('common'));
         }, (err) => {
-            alert('Error fetching users');
-            return dispatch(stopAjax());
+            if ([401, 403].some(i => i === err.response.status)) {
+                history.push('/logout');
+            } else {
+                alert('Error fetching user info')
+            }
+            return dispatch(stopAjax('common'));
         });
     }
 };

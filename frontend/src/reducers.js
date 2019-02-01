@@ -35,9 +35,9 @@ const reducer = (state = {}, action) => {
         case actionTypes.CLOSE_EDIT_MEAL_MODAL:
             return {...state, editMealModalOpened: false, addMealModalOpened: false};
         case actionTypes.START_AJAX:
-            return {...state, ajaxInProgress: true};
+            return {...state, ajaxInProgress: {...state.ajaxInProgress, [action.entity]: true}};
         case actionTypes.STOP_AJAX:
-            return {...state, ajaxInProgress: false};
+            return {...state, ajaxInProgress: {...state.ajaxInProgress, [action.entity]: false}};
         case actionTypes.SET_MEAL_TO_EDIT:
             return {...state, mealToEdit: action.meal};
         case actionTypes.OPEN_SETTINGS_MODAL:
@@ -71,6 +71,8 @@ const reducer = (state = {}, action) => {
             return {...state, mealErrors: action.errors};
         case actionTypes.SET_SETTING_ERRORS:
             return {...state, settingErrors: action.errors};
+        case actionTypes.SET_USER_ERRORS:
+            return {...state, userErrors: action.errors};
         case actionTypes.RESET_STORE:
             return {...initialState};
 

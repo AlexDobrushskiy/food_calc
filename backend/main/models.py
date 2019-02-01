@@ -54,6 +54,10 @@ class Meal(models.Model):
         setting, _ = CaloriesPerDay.objects.get_or_create(user=self.user)
         return calories_per_day > setting.value
 
+    @property
+    def username(self):
+        return self.user.username
+
     def __str__(self):
         return '{} by user {}'.format(self.text, self.user.username)
 

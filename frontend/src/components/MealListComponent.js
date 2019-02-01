@@ -35,7 +35,7 @@ class MealList extends Component {
         if (!this.props.token) {
             return null;
         }
-        if (this.props.meals === null) {
+        if (this.props.meals === null && !this.props.ajaxInProgress) {
             this.props.dispatch(fetchMeals());
         }
 
@@ -45,13 +45,15 @@ class MealList extends Component {
             if (this.props.meals !== null) {
                 meals = this.props.meals.map((meal, index) => {
                     const rowClass = meal.exceeded_calories_per_day ? 'exceeded' : 'not-exceeded';
+                    const userCol = this.props.userInfo.role === 2 ? <td scope="col" className="col-2">{meal.username}</td> : null;
                     return <tr key={index} className={rowClass}>
                         <td className="col-1">{meal.date}</td>
                         <td className="col-1">{meal.time}</td>
                         <td className="col-4" style={{wordWrap: 'break-word'}}>{meal.text}</td>
                         <td className="col-1">{meal.calories}</td>
+                        {userCol}
                         <td className="col-2">
-                            <span className="ml-4 btn btn-light" onClick={this.editMealClick.bind(this, meal)}>
+                            <span className="btn btn-light" onClick={this.editMealClick.bind(this, meal)}>
                                 <i className="fas fa-edit"/>
                             </span>
                             <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, meal.id)}>
@@ -62,29 +64,32 @@ class MealList extends Component {
                 });
             }
         }
-        const paginationRow = <Row className="justify-content-center">
-            <ReactPaginate
-                previousLabel={'previous'}
-                nextLabel={'next'}
-                breakLabel={'...'}
-                pageCount={this.props.maxPage}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={this.handlePageClick}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
-                pageClassName={'page-item'}
-                pageLinkClassName={'page-link'}
-                previousClassName={'page-item'}
-                previousLinkClassName={'page-link'}
-                nextClassName={'page-item'}
-                nextLinkClassName={'page-link'}
-                breakClassName={'page-item'}
-                breakLinkClassName={'page-link'}
-                forcePage={this.props.currentPage - 1}
-            />
-        </Row>;
-
+        let paginationRow = null;
+        if (this.props.maxPage > 1) {
+            paginationRow = <Row className="justify-content-center">
+                <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    pageCount={this.props.maxPage}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={this.handlePageClick}
+                    containerClassName={'pagination'}
+                    activeClassName={'active'}
+                    pageClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                    previousClassName={'page-item'}
+                    previousLinkClassName={'page-link'}
+                    nextClassName={'page-item'}
+                    nextLinkClassName={'page-link'}
+                    breakClassName={'page-item'}
+                    breakLinkClassName={'page-link'}
+                    forcePage={this.props.currentPage - 1}
+                />
+            </Row>;
+        }
+        const userCol = this.props.userInfo.role === 2 ? <th scope="col" className="col-2">User</th> : null;
         return <Container>
             <Row className="justify-content-center">
                 <FilterFormContainer/>
@@ -102,6 +107,7 @@ class MealList extends Component {
                     <th scope="col" className="col-1">Time</th>
                     <th scope="col" className="col-4">Text</th>
                     <th scope="col" className="col-1">Callories</th>
+                    {userCol}
                     <th scope="col" className="col-2">
                         Actions
                     </th>

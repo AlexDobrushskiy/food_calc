@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
     currentPage: state.currentPage,
     maxPage: state.maxPage,
     userInfo: state.userInfo,
-    ajaxInProgress: state.ajaxInProgress
+    ajaxInProgress: state.ajaxInProgress.meal
 });
 
 const mapDispatchToProps = dispatch => ({
