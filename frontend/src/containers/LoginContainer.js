@@ -5,7 +5,7 @@ import {openRegisterForm, saveAPIToken} from '../actions';
 
 const mapStateToProps = state => ({
     token: state.token,
-    ajaxInProgress: state.ajaxInProgress.common
+    ajaxInProgress: state.ajaxInProgress.login
 });
 
 const mapDispatchToProps = dispatch => ({

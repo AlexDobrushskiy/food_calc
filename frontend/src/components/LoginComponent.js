@@ -117,7 +117,7 @@ export class Login extends Component {
         this.setState({password: e.target.value, errors: this.emptyErrors});
     };
     onSignInClick = (e) => {
-        this.props.dispatch(startAjax());
+        this.props.dispatch(startAjax('login'));
         axios.post(settings.LOGIN_URL,
             {
                 username: this.state.username,
@@ -125,11 +125,11 @@ export class Login extends Component {
             }).then((r) => {
             const token = r.data.key;
             this.props.saveAPIToken(token);
-            this.props.dispatch(stopAjax());
+            this.props.dispatch(stopAjax('login'));
         }).catch((err) => {
             const errors = err.response.data;
             this.setState({errors: {...this.state.errors, ...errors}});
-            this.props.dispatch(stopAjax());
+            this.props.dispatch(stopAjax('login'));
         });
         this.props.dispatch(hideUserRegisteredAlert());
     };

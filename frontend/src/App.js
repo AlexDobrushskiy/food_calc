@@ -31,7 +31,8 @@ const initialAjaxInProgress = {
     common: false,
     meal: false,
     user: false,
-    setting: false
+    setting: false,
+    login: false
 };
 
 
