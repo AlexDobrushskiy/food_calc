@@ -22,9 +22,11 @@ class MealUserSerializer(serializers.ModelSerializer):
 
 
 class MealAdminSerializer(serializers.ModelSerializer):
+    exceeded_calories_per_day = serializers.ReadOnlyField()
+
     class Meta:
         model = Meal
-        fields = ('date', 'time', 'text', 'calories', 'user', 'id')
+        fields = ('date', 'time', 'text', 'calories', 'user', 'id','exceeded_calories_per_day')
 
 
 class MealFilter(filters.FilterSet):

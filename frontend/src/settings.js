@@ -1,4 +1,4 @@
-const HOST_NAME = 'http://192.168.22.127:8080';
+const HOST_NAME = 'http://localhost:8080';
 // REST Auth endpoints:
 // https://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html
 

@@ -14,7 +14,8 @@ import {
 import history from '../history';
 import axios from 'axios';
 import * as settings from '../settings';
-import {hideUserRegisteredAlert, showUserRegisteredAlert} from "../actions";
+import {hideUserRegisteredAlert, showUserRegisteredAlert, startAjax, stopAjax} from "../actions";
+import {Spinner} from "./SpinnerComponent";
 
 
 export class RegisterModal extends Component {
@@ -33,12 +34,13 @@ export class RegisterModal extends Component {
             errors: this.emptyErrors
         }
     }
+
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value});
     };
     handleSubmit = () => {
         const {errors, ...data} = this.state;
-        axios.post(settings.REGISTER_USER_URL, data).then((r)=>{
+        axios.post(settings.REGISTER_USER_URL, data).then((r) => {
             // dispatch registerSuccess
             // close window
             this.props.closeRegisterForm();
@@ -52,6 +54,7 @@ export class RegisterModal extends Component {
         this.props.closeRegisterForm();
         this.setState({username: '', password1: '', password2: '', errors: this.emptyErrors})
     };
+
     render() {
         let nonFieldErrors = [];
         if (this.state.errors.non_field_errors) {
@@ -82,7 +85,7 @@ export class RegisterModal extends Component {
                     </div>
                 );
             });
-        }        
+        }
         let password2Errors = [];
         if (this.state.errors.password2) {
             this.state.errors.password2.forEach((errorText, index) => {
@@ -92,24 +95,24 @@ export class RegisterModal extends Component {
                     </div>
                 );
             });
-        }        
+        }
         return <Modal isOpen={this.props.isOpen}>
             <ModalHeader>Register</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
                         <Input type="text" name="username" id="idUsername" placeholder="Login"
-                        value={this.state.login} onChange={this.onChange}/>
+                               value={this.state.login} onChange={this.onChange}/>
                         {usernameErrors}
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" name="password1" id="idPassword1" placeholder="Password"
-                        value={this.state.password1} onChange={this.onChange}/>
+                               value={this.state.password1} onChange={this.onChange}/>
                         {password1Errors}
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" name="password2" id="idPassword2" placeholder="Repeat password"
-                        value={this.state.password2} onChange={this.onChange}/>
+                               value={this.state.password2} onChange={this.onChange}/>
                         {password2Errors}
                     </FormGroup>
                     {nonFieldErrors}
@@ -151,16 +154,19 @@ export class Login extends Component {
         this.setState({password: e.target.value, errors: this.emptyErrors});
     };
     onSignInClick = (e) => {
+        this.props.dispatch(startAjax());
         axios.post(settings.LOGIN_URL,
             {
                 username: this.state.username,
                 password: this.state.password
             }).then((r) => {
-                const token = r.data.key;
-                this.props.saveAPIToken(token);
+            const token = r.data.key;
+            this.props.saveAPIToken(token);
+            this.props.dispatch(stopAjax());
         }).catch((err) => {
             const errors = JSON.parse(err.request.response);
             this.setState({errors});
+            this.props.dispatch(stopAjax());
         });
         this.props.dispatch(hideUserRegisteredAlert());
     };
@@ -231,7 +237,10 @@ export class Login extends Component {
                     <Row className="justify-content-center mt-4">
                         <div className="col-4">
                             <Button className="btn btn-lg btn-primary btn-block" type="button"
-                                    onClick={this.onSignInClick}>Sign in</Button>
+                                    onClick={this.onSignInClick} disabled={this.props.ajaxInProgress}>
+                                <Spinner show={this.props.ajaxInProgress}/>
+                                Sign in
+                            </Button>
                         </div>
                     </Row>
                 </Form>

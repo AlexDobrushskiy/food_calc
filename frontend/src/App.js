@@ -16,7 +16,8 @@ export const initialState = {
     users: null,
     isOpen: false,
     currentPage: 1,
-    userInfo: {username: ''}
+    userInfo: {username: ''},
+    ajaxInProgress: false
 };
 const defaultState = {...initialState, token};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
