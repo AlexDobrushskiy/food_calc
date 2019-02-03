@@ -9,7 +9,10 @@ import {
     Input
 } from 'reactstrap';
 import "react-datepicker/dist/react-datepicker.css";
-import {changeCaloriesSettingValue, closeSettingsModal, saveCaloriesSetting, setSettingErrors} from "../actions";
+import {
+    changeCaloriesSettingValue, closeSettingsModal, saveCaloriesSetting, setSettingErrors,
+    startAjax
+} from "../actions";
 import {getRenderedErrors} from "../utils";
 import {emptySettingErrors} from "../App";
 
@@ -40,7 +43,7 @@ export class Settings extends Component {
                         {valueErrors}
                     </FormGroup>
                     {nonFieldErrors}
-                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">Save</Button>
+                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4" disabled={this.props.ajaxInProgress}>Save</Button>
                     <Button color="info" onClick={this.onCancel}
                             className="float-right">Cancel</Button>
                 </Form>

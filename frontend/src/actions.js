@@ -156,7 +156,7 @@ export const saveEditedMeal = () => {
         const {token, mealToEdit, mealErrors} = getState();
         const mealUpdateUrl = mealToEdit.id ? `${settings.MEAL_URL}${mealToEdit.id}/` : settings.MEAL_URL;
 
-        dispatch(stopAjax('common'));
+        dispatch(startAjax('meal'));
         let data = {
             date: mealToEdit.date,
             time: mealToEdit.time,
@@ -168,12 +168,12 @@ export const saveEditedMeal = () => {
         }
         const method = mealToEdit.id ? axios.put : axios.post;
         return method(mealUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax('common'));
+                dispatch(stopAjax('meal'));
                 dispatch(setMealToEdit(null));
                 return dispatch(fetchMeals());
             },
             (err) => {
-                dispatch(stopAjax('common'));
+                dispatch(stopAjax('meal'));
                 dispatch(setMealErrors({...mealErrors, ...err.response.data}));
             });
     }
@@ -196,9 +196,12 @@ export const changeCaloriesSettingValue = (value) => ({
 export const fetchCaloriesSetting = () => {
     return (dispatch, getState) => {
         const {token} = getState();
+        dispatch(startAjax('setting'));
         axios.get(settings.CALORIES_SETTING_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
                 dispatch(changeCaloriesSettingValue(r.data.value));
+                dispatch(stopAjax('setting'));
             }, (err) => {
+                dispatch(stopAjax('setting'));
                 if ([401, 403].some(i => i === err.response.status)) {
                     history.push('/logout');
                 } else {
@@ -212,12 +215,15 @@ export const fetchCaloriesSetting = () => {
 export const saveCaloriesSetting = () => {
     return (dispatch, getState) => {
         const {token, caloriesSettingsValue, settingErrors} = getState();
+        dispatch(startAjax('setting'));
         axios.put(settings.CALORIES_SETTING_URL, {value: caloriesSettingsValue}, {headers: {Authorization: 'Token ' + token}}).then((r) => {
             dispatch(closeSettingsModal());
             dispatch(fetchCaloriesSetting());
             dispatch(fetchMeals());
+            dispatch(stopAjax('setting'));
         }, (err) => {
             dispatch(setSettingErrors({...settingErrors, ...err.response.data}));
+            dispatch(stopAjax('setting'));
         });
     }
 };
@@ -294,7 +300,7 @@ export const saveEditedUser = () => {
     return (dispatch, getState) => {
         const {token, userToEdit, userErrors} = getState();
         const userUpdateUrl = userToEdit.id ? `${settings.USER_URL}${userToEdit.id}/` : settings.USER_URL;
-        dispatch(stopAjax('common'));
+        dispatch(startAjax('user'));
         const data = {
             username: userToEdit.username,
             role: userToEdit.role
@@ -304,13 +310,13 @@ export const saveEditedUser = () => {
         }
         const method = userToEdit.id ? axios.patch : axios.post;
         return method(userUpdateUrl, data, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-                dispatch(stopAjax('common'));
+                dispatch(stopAjax('user'));
                 dispatch(setUserToEdit(null));
                 return dispatch(fetchUsers());
             },
             (err) => {
                 dispatch(setUserErrors({...userErrors, ...err.response.data}));
-                dispatch(stopAjax('common'));
+                dispatch(stopAjax('user'));
             });
     }
 };

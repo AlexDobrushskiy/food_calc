@@ -32,7 +32,8 @@ export class RegisterModal extends Component {
             username: '',
             password1: '',
             password2: '',
-            errors: this.emptyErrors
+            errors: this.emptyErrors,
+            submitDisabled: false
         }
     }
 
@@ -40,13 +41,16 @@ export class RegisterModal extends Component {
         this.setState({[e.target.name]: e.target.value, errors: this.emptyErrors});
     };
     handleSubmit = () => {
+        this.setState({submitDisabled: true});
         const {errors, ...data} = this.state;
         axios.post(settings.REGISTER_USER_URL, data).then((r) => {
             this.props.closeRegisterForm();
             this.props.dispatch(showUserRegisteredAlert());
+            this.setState({submitDisabled: false});
         }, (err) => {
             const errors = err.response.data;
             this.setState({errors: {...this.state.errors, ...errors}});
+            this.setState({submitDisabled: false});
         });
     };
     onCancel = () => {
@@ -70,16 +74,17 @@ export class RegisterModal extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" name="password1" id="idPassword1" placeholder="Password"
-                               value={this.state.password1} onChange={this.onChange}/>
+                               value={this.state.password1} onChange={this.onChange} autoComplete="new-password"/>
                         {password1Errors}
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" name="password2" id="idPassword2" placeholder="Repeat password"
-                               value={this.state.password2} onChange={this.onChange}/>
+                               value={this.state.password2} onChange={this.onChange} autoComplete="new-password"/>
                         {password2Errors}
                     </FormGroup>
                     {nonFieldErrors}
-                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">Register</Button>
+                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4"
+                    disabled={this.state.submitDisabled}>Register</Button>
                     <Button color="info" onClick={this.onCancel}
                             className="float-right">Cancel</Button>
                 </Form>

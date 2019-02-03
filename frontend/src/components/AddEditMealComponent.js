@@ -86,7 +86,7 @@ export class AddEditMeal extends Component {
                         {caloriesErrors}
                     </FormGroup>
                     {nonFieldErrors}
-                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4">{submitBtnText}</Button>
+                    <Button color="info" onClick={this.handleSubmit} className="float-right ml-4" disabled={this.props.ajaxInProgress}>{submitBtnText}</Button>
                     <Button color="info" onClick={this.onCancel}
                             className="float-right">Cancel</Button>
                 </Form>

@@ -6,7 +6,8 @@ const mapStateToProps = state => ({
     isEditOpen: state.editUserModalOpened,
     isAddOpen: state.addUserModalOpened,
     user: state.userToEdit,
-    errors: state.userErrors
+    errors: state.userErrors,
+    ajaxInProgress: state.ajaxInProgress.user
 });
 
 const mapDispatchToProps = dispatch => ({
