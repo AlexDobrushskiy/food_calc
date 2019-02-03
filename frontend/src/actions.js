@@ -247,7 +247,7 @@ export const fetchUsers = () => {
         const {token} = getState();
         dispatch(stopAjax('common'));
         return axios.get(settings.USER_URL, {headers: {Authorization: 'Token ' + token}}).then((r) => {
-            dispatch(saveUserList(r.data.results));
+            dispatch(saveUserList(r.data));
             return dispatch(stopAjax('common'));
         }, (err) => {
             if ([401, 403].some(i => i === err.response.status)) {

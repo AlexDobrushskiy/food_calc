@@ -27,6 +27,7 @@ class LastPagePaginator(Paginator):
 
 class PageNumberPaginationWithCurrentPageNumber(PageNumberPagination):
     django_paginator_class = LastPagePaginator
+    page_size = 10
 
     def get_paginated_response(self, data):
         return Response(OrderedDict([

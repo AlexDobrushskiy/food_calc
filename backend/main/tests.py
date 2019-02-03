@@ -84,21 +84,21 @@ class MealResourceTestCase(TestCase):
         meal1 = mommy.make(Meal, user=self.user)
         meal2 = mommy.make(Meal, user=self.manager)
         response = self.user_client.get('/api/v1/meal/')
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], meal1.id)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['id'], meal1.id)
 
     def test_manager_get_only_own_meals(self):
         meal1 = mommy.make(Meal, user=self.user)
         meal2 = mommy.make(Meal, user=self.manager)
         response = self.manager_client.get('/api/v1/meal/')
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], meal2.id)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['id'], meal2.id)
 
     def test_admin_get_all_meals(self):
         meal1 = mommy.make(Meal, user=self.user)
         meal2 = mommy.make(Meal, user=self.manager)
         response = self.admin_client.get('/api/v1/meal/')
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data['results']), 2)
 
 
 class UserResourceTestCase(TestCase):

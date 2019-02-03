@@ -57,27 +57,32 @@ export class AddEditUser extends Component {
         const submitBtnText = this.props.isEditOpen ? 'Edit' : 'Add';
         const roleOptions = Object.keys(settings.ROLES).map((key) => <option
             value={key} key={key}>{settings.ROLES[key]}</option>);
+        const roleFieldAdmin = <FormGroup>
+            <select name="role" id="idRole" className="custom-select" value={this.props.user.role}
+                    onChange={this.roleChange}>
+                {roleOptions}
+            </select>
+            {roleErrors}
+        </FormGroup>;
+        const roleField = this.props.userInfo.role === settings.USER_ROLE_ADMIN ? roleFieldAdmin : null;
+
         return <Modal isOpen={this.props.isEditOpen || this.props.isAddOpen}>
             <ModalHeader>{header}</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
                         <Input type="text" name="username" id="idUsername" placeholder="Username"
-                               value={this.props.user.username} onChange={this.usernameChange} autoComplete="new-password"/>
+                               value={this.props.user.username} onChange={this.usernameChange}
+                               autoComplete="new-password"/>
                         {usernameErrors}
                     </FormGroup>
                     <FormGroup>
                         <Input type="password" min="0" step="1" name="password" id="idPassword" placeholder="Password"
-                               value={this.props.user.password} onChange={this.passwordChange}  autoComplete="new-password"/>
+                               value={this.props.user.password} onChange={this.passwordChange}
+                               autoComplete="new-password"/>
                         {passwordErrors}
                     </FormGroup>
-                    <FormGroup>
-                        <select name="role" id="idRole" className="custom-select" value={this.props.user.role}
-                        onChange={this.roleChange}>
-                            {roleOptions}
-                        </select>
-                        {roleErrors}
-                    </FormGroup>
+                    {roleField}
                     {nonFieldErrors}
                     <Button color="info" onClick={this.handleSubmit}
                             className="float-right ml-4" disabled={this.props.ajaxInProgress}>{submitBtnText}</Button>

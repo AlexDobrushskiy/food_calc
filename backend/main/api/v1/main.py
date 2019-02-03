@@ -10,6 +10,7 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from main.models import User, Meal, USER_ROLE_ADMIN, USER_ROLE_MANAGER, CaloriesPerDay
+from main.paginators import PageNumberPaginationWithCurrentPageNumber
 
 
 class MealUserSerializer(serializers.ModelSerializer):
@@ -45,6 +46,7 @@ class MealViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all().order_by('-date', '-time', '-id')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MealFilter
+    pagination_class = PageNumberPaginationWithCurrentPageNumber
 
     def get_queryset_for_admin(self):
         return self.queryset
@@ -89,7 +91,7 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSerializerWithRoleReadOnly(serializers.ModelSerializer):
+class UserSerializerWithRoleReadOnly(UserSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'role',)
@@ -107,12 +109,14 @@ class IsAdminOrManager(BasePermission):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-id')
     permission_classes = (IsAuthenticated, IsAdminOrManager)
 
     def get_serializer_class(self):
-        if self.request.user.role in (USER_ROLE_ADMIN, USER_ROLE_MANAGER):
+        if self.request.user.role == USER_ROLE_ADMIN:
             return UserSerializer
+        if self.request.user.role == USER_ROLE_MANAGER:
+            return UserSerializerWithRoleReadOnly
         raise PermissionDenied
 
 

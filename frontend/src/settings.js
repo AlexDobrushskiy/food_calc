@@ -14,3 +14,7 @@ export const ROLES = {
     1: 'Manager',
     2: 'Admin'
 };
+
+export const USER_ROLE_USER = 0;
+export const USER_ROLE_MANAGER = 1;
+export const USER_ROLE_ADMIN = 2;
