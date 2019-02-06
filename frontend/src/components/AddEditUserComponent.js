@@ -55,16 +55,28 @@ export class AddEditUser extends Component {
 
         const header = this.props.isEditOpen ? 'Edit User' : 'Add User';
         const submitBtnText = this.props.isEditOpen ? 'Edit' : 'Add';
-        const roleOptions = Object.keys(settings.ROLES).map((key) => <option
+
+        const roleAdminOptions = Object.keys(settings.ROLES).map((key) => <option
             value={key} key={key}>{settings.ROLES[key]}</option>);
-        const roleFieldAdmin = <FormGroup>
+        const roleManagerOptions = settings.MANAGER_AVAILABLE_ROLES.map((key) => <option
+            value={key} key={key}>{settings.ROLES[key]}</option>);
+
+        const roleOptions = this.props.userInfo.role === settings.USER_ROLE_ADMIN ? roleAdminOptions : roleManagerOptions;
+
+        let roleField = <FormGroup>
             <select name="role" id="idRole" className="custom-select" value={this.props.user.role}
                     onChange={this.roleChange}>
                 {roleOptions}
             </select>
             {roleErrors}
         </FormGroup>;
-        const roleField = this.props.userInfo.role === settings.USER_ROLE_ADMIN ? roleFieldAdmin : null;
+
+        if (this.props.user.role &&
+            this.props.user.role === settings.USER_ROLE_ADMIN &&
+            this.props.userInfo.role === settings.USER_ROLE_MANAGER) {
+            roleField = null;
+        }
+
 
         return <Modal isOpen={this.props.isEditOpen || this.props.isAddOpen}>
             <ModalHeader>{header}</ModalHeader>

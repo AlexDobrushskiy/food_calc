@@ -91,14 +91,20 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSerializerWithRoleReadOnly(UserSerializer):
+class UserSerializerForManager(UserSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'role',)
         extra_kwargs = {
-            'password': {'write_only': True},
-            'role': {'read_only': True}
+            'password': {'write_only': True}
         }
+
+    def validate(self, attrs):
+        if 'role' in attrs:
+            role = attrs['role']
+            if role == USER_ROLE_ADMIN:
+                raise serializers.ValidationError('You are not allowed to promote users to admins')
+        return attrs
 
 
 class IsAdminOrManager(BasePermission):
@@ -116,7 +122,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.user.role == USER_ROLE_ADMIN:
             return UserSerializer
         if self.request.user.role == USER_ROLE_MANAGER:
-            return UserSerializerWithRoleReadOnly
+            return UserSerializerForManager
         raise PermissionDenied
 
 
