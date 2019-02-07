@@ -132,13 +132,16 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserSerializerForManager
         raise PermissionDenied
 
-    def destroy(self, request, *args, **kwargs):
-        if request.user.role == USER_ROLE_ADMIN:
-            super(UserViewSet, self).destroy(request, *args, **kwargs)
-        else:
-            instance = self.get_object()
+    def perform_destroy(self, instance):
+        if self.request.user.role == USER_ROLE_ADMIN:
+            instance.delete()
+        elif self.request.user.role == USER_ROLE_MANAGER:
             if instance.role == USER_ROLE_ADMIN:
-                raise serializers.ValidationError('you are not able to delete admins')
+                raise PermissionDenied('You are not able to delete admins')
+            else:
+                instance.delete()
+        else:
+            raise PermissionDenied('You are not able to delete users')
 
 
 class CaloriesPerDaySerializer(serializers.ModelSerializer):
