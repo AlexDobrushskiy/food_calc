@@ -177,7 +177,7 @@ class UserResourceTestCase(TestCase):
         response = self.manager_client.patch('/api/v1/user/{}/'.format(self.user.id),
                                              {'role': USER_ROLE_ADMIN})
         # it returns 200, but silently skips role field
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(User.objects.get(id=1).role, USER_ROLE_USER)
 
 
