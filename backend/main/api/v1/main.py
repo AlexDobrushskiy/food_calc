@@ -102,8 +102,13 @@ class UserSerializerForManager(UserSerializer):
     def validate(self, attrs):
         if 'role' in attrs:
             role = attrs['role']
-            if role == USER_ROLE_ADMIN:
-                raise serializers.ValidationError('You are not allowed to promote users to admins')
+            if not self.instance:
+                if role == USER_ROLE_ADMIN:
+                    raise serializers.ValidationError('You are not allowed to create admin users')
+            else:
+                if role == USER_ROLE_ADMIN and role != self.instance.role:
+                    raise serializers.ValidationError('You are not allowed to promote users to admin')
+
         return attrs
 
 
