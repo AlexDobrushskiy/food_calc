@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'toptal.urls'
+ROOT_URLCONF = 'food_calc.urls'
 
 TEMPLATES = [
     {
@@ -78,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'toptal.wsgi.application'
+WSGI_APPLICATION = 'food_calc.wsgi.application'
 
 
 # Database

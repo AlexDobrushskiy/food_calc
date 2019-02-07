@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'toptal.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'food_calc.settings')
 
 application = get_wsgi_application()
