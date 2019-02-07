@@ -6,7 +6,8 @@ import {Dummy} from "../components/DummyComponent";
 
 const mapStateToProps = state => ({
     users: state.users,
-    token: state.token
+    token: state.token,
+    userInfo: state.userInfo
 });
 
 const mapDispatchToProps = dispatch => ({

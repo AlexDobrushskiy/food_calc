@@ -33,6 +33,7 @@ export class UserList extends Component {
     addUserClick = () => {
         this.props.dispatch(openAddUserModal());
     };
+
     render() {
         if (!this.props.token) {
             return null;
@@ -43,16 +44,24 @@ export class UserList extends Component {
         let users = [];
         if (this.props.users !== null) {
             users = this.props.users.map((user, index) => {
+                let deleteIcon = <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, user.id)}>
+                            <i className="fas fa-trash-alt"/>
+                        </span>;
+                let editIcon = <span className="btn btn-light" onClick={this.editUserClick.bind(this, user)}>
+                            <i className="fas fa-edit"/>
+                        </span>;
+
+                if (user && user.role === settings.USER_ROLE_ADMIN && this.props.userInfo.role === settings.USER_ROLE_MANAGER) {
+                    deleteIcon = null;
+                    editIcon = null;
+                }
+
                 return <tr key={index}>
                     <td className="col-1">{user.username}</td>
                     <td className="col-1">{settings.ROLES[user.role]}</td>
                     <td className="col-2">
-                        <span className="btn btn-light" onClick={this.editUserClick.bind(this, user)}>
-                            <i className="fas fa-edit"/>
-                        </span>
-                        <span className="ml-4 btn btn-light" onClick={this.onDeleteClick.bind(this, user.id)}>
-                            <i className="fas fa-trash-alt"/>
-                        </span>
+                        {editIcon}
+                        {deleteIcon}
                     </td>
                 </tr>
             });

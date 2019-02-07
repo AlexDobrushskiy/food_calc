@@ -17,7 +17,7 @@ class MealUserSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=CurrentUserDefault())
     exceeded_calories_per_day = serializers.ReadOnlyField()
     calories = IntegerField(min_value=0)
-    
+
     class Meta:
         model = Meal
         fields = ('date', 'time', 'text', 'calories', 'user', 'id', 'exceeded_calories_per_day',)
@@ -100,6 +100,8 @@ class UserSerializerForManager(UserSerializer):
         }
 
     def validate(self, attrs):
+        if self.instance and self.instance.role == USER_ROLE_ADMIN:
+            raise serializers.ValidationError('You are not allowed edit admins')
         if 'role' in attrs:
             role = attrs['role']
             if not self.instance:
@@ -129,6 +131,14 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.user.role == USER_ROLE_MANAGER:
             return UserSerializerForManager
         raise PermissionDenied
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.role == USER_ROLE_ADMIN:
+            super(UserViewSet, self).destroy(request, *args, **kwargs)
+        else:
+            instance = self.get_object()
+            if instance.role == USER_ROLE_ADMIN:
+                raise serializers.ValidationError('you are not able to delete admins')
 
 
 class CaloriesPerDaySerializer(serializers.ModelSerializer):
