@@ -153,4 +153,5 @@ REST_SESSION_LOGIN = False
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
     '192.168.22.127:3000',
+    'dobrushskiy.name:9000'
 )
